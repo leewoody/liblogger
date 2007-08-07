@@ -46,16 +46,27 @@ int InitLogger(LogDest ldest,...)
 				va_end(args);
 				if( -1 == InitSocketLogger(&pLogWriter,server,port) )
 				{
-					fprintf(stderr,"could not init socket logging, will be done to a file.");
+					fprintf(stderr,"\n could not init socket logging, will be done to a file. \n");
+					ldest = LogToFile;
 					goto LOG_TO_FILE;
 				}
 			}
 			break;
 
+		case LogToConsole:
+			{
+				/* log to a console. */
+				if( -1 == InitConsoleLogger(&pLogWriter,0) )
+				{
+					// control should never reach here, this should alwasy succeed.
+					fprintf(stderr,"\n could not initialize console logger \n");
+					return -1;
+				}
+			}
+		break;
 LOG_TO_FILE:
 		case LogToFile:
-		case LogToConsole:
-			/* log to a file */
+			/* log to a file, the second arg is the filename. */
 			{
 				va_list args;
 				char *filename;
@@ -63,9 +74,9 @@ LOG_TO_FILE:
 				filename  = va_arg(args,char*);
 				va_end(args);
 
-				if( -1 == InitFileLogger(&pLogWriter,filename,ldest) )
+				if( -1 == InitFileLogger(&pLogWriter,filename) )
 				{
-					fprintf(stderr,"could not initialize file logger, check file path/name");
+					fprintf(stderr,"\n could not initialize file logger, check file path/name \n");
 					return -1;
 				}
 			}
