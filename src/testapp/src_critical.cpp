@@ -14,8 +14,17 @@ int TestFuncCritical()
 	LogDebug("Debug level Log" );
 	LogCritical("Critical Log" );
 
-	// log the function exit log.
-	LogFuncExit();
+	if(1)
+	{
+		// log the function exit .
+		LogFuncExit();
+		return 0;
+	}
+	else
+	{
+		// log the function exit .
+		LogFuncExit();
+		return -1;
+	}
 	
-	return 0;
 }

@@ -3,20 +3,54 @@
 
 #define TEST_LOG_TO_SOCK
 
+void TestLogToFile();
+void TestLogToConsole();
+void TestLogToSocket();
+void TestLogFuncs();
+
 int main()
 {
-#ifdef TEST_LOG_TO_FILE
+	// delibreately call few logging functions without 
+	// initializing the logger - in this case logs will appear on
+	// console, until InitLogger is done.
+	LogDebug(" THIS LOG WILL APPEAR IN CONSOLE, SINCE InitLogger() was not called");
+	TestLogToFile();
+	TestLogToSocket();
+	TestLogToConsole();
+}
+
+void TestLogToFile()
+{
 	InitLogger(LogToFile,"log.log");
-#elif defined(TEST_LOG_TO_SOCK)
-	InitLogger(LogToSocket,"192.168.1.121",50007);
-#endif
+	TestLogFuncs();
+	// -- not calling deinit logger delibreately --
+	//DeInitLogger();
+}
+
+void TestLogToConsole()
+{
+	InitLogger(LogToConsole);
+	TestLogFuncs();
+	DeInitLogger();
+}
+
+void TestLogToSocket()
+{
+	InitLogger(LogToSocket,"127.0.0.1",50007);
+	TestLogFuncs();
+	DeInitLogger();
+}
 	
+void TestLogFuncs()
+{
 	TestFuncInfo();
 	TestFuncDebug();
 	TestFuncCritical();
 	TestFuncNoLogs();
 	TestFuncMin();
 
+	// crash testing, test for buffer overflow vulnerability, in case of socket logging, this huge log
+	// will be truncated.
 	LogDebug("abcdefghijklmnopqrstuvwxyz"
 		"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
 		"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
@@ -107,7 +141,5 @@ int main()
 		"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
 		"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
 		);
-
-	DeInitLogger();
 
 }
