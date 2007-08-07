@@ -16,7 +16,8 @@ static LogWriter *pLogWriter = 0;
  * */
 #define CHECK_AND_INIT_LOGGER	if(!pLogWriter)	\
 	{ 											\
-		if(InitLogger(LogToFile,0)) 			\
+		fprintf(stderr,"liblogger not initialized, logging will be done to console (stdout)\n");\
+		if(InitLogger(LogToConsole)) 			\
 			return -1; 							\
 		if(!pLogWriter)							\
 			return -1;							\
