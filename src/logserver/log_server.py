@@ -13,7 +13,7 @@ class Worker(threading.Thread):
 		threading.Thread.__init__(self)        
 		self.conn		= conn
 		self.address	= address
-		self.filename		= time.strftime("%d-%b-%Y-%H-%M-%S.txt",time.localtime())
+		self.filename		= time.strftime("%d-%b-%Y-%H-%M-%S.log",time.localtime())
 		self.file		= open(self.filename,'w')
 		self.runFlag	= 1
 
