@@ -54,7 +54,7 @@ extern "C"
 #endif
 
 #ifndef LOG_MODULE_NAME
-#define LOG_MODULE_NAME " "
+#define LOG_MODULE_NAME ""
 #endif
 
 
@@ -96,6 +96,14 @@ typedef enum LogDest
 	#define DeInitLogger()	/* NOP */
 
 #else
+	#include <loglevel_prefix.h>
+
+	#ifdef VARIADIC_MACROS	
+	int LogStub_vm(const char* logLevelStr,
+		const char* moduleName,const char* file,
+		const char* funcName, const int lineNum,
+		const char* fmt,...);
+	#endif
 	/** Function used to initialize the logger.
 	 If the logger is not initialized and a log function is called, then a default log file 
          will be used, also if log to socket is used and if the connection to the server cannot be
@@ -107,8 +115,7 @@ typedef enum LogDest
 	// Logs are enabled.	
 	#if LOG_LEVEL<= LOG_LEVEL_INFO
 		#ifdef VARIADIC_MACROS
-			int FuncLogInfo(const char* moduleName,const char* file,const char* funcName,const int lineNum,const char* fmt,...);
-			#define LogInfo(fmt, ...) FuncLogInfo( LOG_MODULE_NAME,__FILE__,__func__, __LINE__ , fmt , ## __VA_ARGS__)
+			#define LogInfo(fmt, ...) LogStub_vm(LOG_LEVEL_INFO_PREFIX,LOG_MODULE_NAME,__FILE__,__func__, __LINE__ , fmt , ## __VA_ARGS__)
 		#else
 			int LogInfo(const char *fmt, ...);
 		#endif
@@ -118,8 +125,7 @@ typedef enum LogDest
 
 	#if LOG_LEVEL<= LOG_LEVEL_DEBUG
 		#ifdef VARIADIC_MACROS
-			int FuncLogDebug(const char* moduleName,const char* file,const char* funcName,const int lineNum,const char* fmt,...);
-			#define LogDebug(fmt, ...) FuncLogDebug(LOG_MODULE_NAME, __FILE__,__func__, __LINE__ , fmt , ## __VA_ARGS__)
+			#define LogDebug(fmt, ...) LogStub_vm(LOG_LEVEL_DEBUG_PREFIX,LOG_MODULE_NAME, __FILE__,__func__, __LINE__ , fmt , ## __VA_ARGS__)
 		#else
 			int LogDebug(const char *fmt, ...);
 		#endif
@@ -130,8 +136,7 @@ typedef enum LogDest
 	
 	#if LOG_LEVEL<= LOG_LEVEL_CRITICAL
 		#ifdef VARIADIC_MACROS	
-			int FuncLogCritical(const char* moduleName,const char* file,const char* funcName,const int lineNum,const char* fmt,...);
-			#define LogCritical(fmt, ...) FuncLogCritical(LOG_MODULE_NAME, __FILE__,__func__, __LINE__ , fmt , ## __VA_ARGS__)
+			#define LogCritical(fmt, ...) LogStub_vm(LOG_LEVEL_CRITICAL_PREFIX,LOG_MODULE_NAME, __FILE__,__func__, __LINE__ , fmt , ## __VA_ARGS__)
 		#else
 			int LogCritical(const char *fmt, ...);
 		#endif
