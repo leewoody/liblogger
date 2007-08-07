@@ -60,7 +60,26 @@ static void PrependDateTimeToLogFileName(char* outBuf,int bufMaxSize, char* file
 	outBuf[bufMaxSize-1] = 0;
 }
 
-int InitFileLogger(LogWriter** logWriter,char* filename,LogDest dest)
+int InitConsoleLogger(LogWriter** logWriter,void* dest)
+{
+
+	if(!logWriter)
+	{
+		fprintf(stderr,"Invalid args to function InitFileLogger\n");
+		return -1;
+	}
+	*logWriter = 0;
+
+	if (sFileLogWriter.fp)
+	{
+		sFileLoggerDeInit((LogWriter*)&sFileLogWriter);
+	}
+	sFileLogWriter.fp = stdout;
+	*logWriter = (LogWriter*)&sFileLogWriter;
+	return 0; // success!
+}
+
+int InitFileLogger(LogWriter** logWriter,char* filename)
 {
 	if(!logWriter)
 	{
@@ -73,11 +92,7 @@ int InitFileLogger(LogWriter** logWriter,char* filename,LogDest dest)
 	{
 		sFileLoggerDeInit((LogWriter*)&sFileLogWriter);
 	}
-	if(LogToConsole == dest)
-	{
-		sFileLogWriter.fp = stdout;
-	}
-	else // LogToFile
+
 	{
 		char  tempBuf[MAX_PATH];
 		if(filename)
@@ -169,7 +184,8 @@ int sFileLoggerDeInit(LogWriter* _this)
 	FileLogWriter *flw = (FileLogWriter*) _this;
 	if(flw && flw->fp)
 	{
-		fclose(flw->fp);
+		if( (flw->fp != stdout) && (flw->fp != stderr) )
+			fclose(flw->fp);
 	}
 	flw->fp = 0;
 	return 0;
