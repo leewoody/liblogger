@@ -1,0 +1,18 @@
+# Scons build script, 
+import sys
+import glob
+Library(
+		'logger',
+		glob.glob('./src/*.c'),
+		CPPPATH=['./inc'], 
+		CFLAGS = ['-Wall','-ggdb']
+		)
+
+Program(
+		'logger_test',
+		glob.glob('./testapp/*.cpp'),
+		CPPPATH=['./inc'], 
+		CFLAGS = ['-Wall','-ggdb'],
+		LIBS	= ['logger'],
+		LIBPATH	= ['.']
+	)
