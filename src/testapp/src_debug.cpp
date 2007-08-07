@@ -1,5 +1,6 @@
 #include <liblogger_levels.h>
-// For this file, we choose the debug log level.
+// For this file, we choose the logs with priority Debug and higher, 
+// so logs with lesser priority i.e LogInfo(), will not appear.
 #define LOG_LEVEL LOG_LEVEL_DEBUG
 // The module name for this file.
 #define LOG_MODULE_NAME	"LogDebugTest"
@@ -10,9 +11,9 @@ int TestFuncDebug()
 	// log the function entry log.
 	LogFuncEntry();
 
-	LogInfo("Info Level Log %d" , 0);
-	LogDebug("Debug level Log" );
-	LogCritical("Critical Log" );
+	LogInfo("Info Level log %d" , 0);
+	LogDebug("Debug level log" );
+	LogCritical("Critical log" );
 
 	// log the function exit log.
 	LogFuncExit();

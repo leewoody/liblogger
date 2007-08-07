@@ -14,8 +14,11 @@ int main()
 	// initializing the logger - in this case logs will appear on
 	// console, until InitLogger is done.
 	LogDebug(" THIS LOG WILL APPEAR IN CONSOLE, SINCE InitLogger() was not called");
+	// log to a file. 
 	TestLogToFile();
+	// log to a socket - make sure that log server is running.
 	TestLogToSocket();
+	// log to console.
 	TestLogToConsole();
 }
 
