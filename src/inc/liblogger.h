@@ -14,13 +14,7 @@ extern "C"
 {
 #endif
 
-
-
-/** Use this macro to disable all logs */
-#undef DISABLE_ALL_LOGS
-
-/** Define this macro, to log to stdio, when logger is initialized with kLogToFile  option */
-#undef LOG_TO_STDOUT
+#include <liblogger_config.h>
 
 /**Indicates the  Log Level for the source file */
 #ifndef LOG_LEVEL
@@ -61,11 +55,13 @@ typedef enum LogDest
 // Logs needs to be disabled.
 #ifdef DISABLE_ALL_LOGS
 
+#warning Logger disabled.
+
 	#define LogInfo 		/* NOP */
 	#define LogDebug 		/* NOP */
 	#define LogCritical 	/* NOP */
-	#define LogFuncEntry	/* NOP */
-	#define LogFuncExit		/* NOP */
+	#define LogFuncEntry()	/* NOP */
+	#define LogFuncExit()	/* NOP */
 	#define InitLogger 		/* NOP */
 	#define DeInitLogger()	/* NOP */
 
