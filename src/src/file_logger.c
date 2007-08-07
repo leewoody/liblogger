@@ -71,7 +71,7 @@ int InitFileLogger(LogWriter** logWriter,char* filename,LogDest dest)
 
 	if (sFileLogWriter.fp)
 	{
-		fclose(sFileLogWriter.fp);
+		sFileLoggerDeInit((LogWriter*)&sFileLogWriter);
 	}
 	if(LogToConsole == dest)
 	{
@@ -171,5 +171,6 @@ int sFileLoggerDeInit(LogWriter* _this)
 	{
 		fclose(flw->fp);
 	}
+	flw->fp = 0;
 	return 0;
 }
