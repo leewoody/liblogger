@@ -14,33 +14,7 @@ extern "C"
 {
 #endif
 
-/**
- * \defgroup LOG_SUBSYSTEM The Logging Subsystem
- * The voip log subsystem provides facility to log to a file or to a socket transparently.
- * \section USAGE Using Log Subsystem
- * \li Initialize the log subsystem via call to \ref InitLogger
- * \li Call the logging functions : LogInfo, LogDebug, LogCritical.
- * \li DeInitialie the log subsystem via \ref DeInitLogger
- * The following sample code demonstrates this
- * \include test.c
- * \subsection LEVELS Log Levels
- * The Log Subsystem has the following levels :
- * \li LOG_LEVEL_INFO : log level for info messages, low priority messages.
- * \li LOG_LEVEL_DEBUG : log level for debug messages, debug messages.
- * \li LOG_LEVEL_CRITICAL : log level for critical messages, highest priority messages like critical error.
- *
- * \subsection CONFIG Configuring Log Subsystem :
- * \li The log level can be changed by defining the macro \c LOG_LEVEL to the required value.
- * \li Define the macro \c DISABLE_ALL_LOGS to disable all logs.
- * \li Define the macro \c LOG_TO_STDOUT to log to stdout, when logger is 
- * \ref InitLogger "initialized" in kLogToFile mode.
- * \li define the macro \c VARIADIC_MACROS to enable logging of filename, function, line no with
- * the logs.
- * 
- *
- * */
 
-/** @{ */
 
 /** Use this macro to disable all logs */
 #undef DISABLE_ALL_LOGS
@@ -110,13 +84,14 @@ typedef enum LogDest
          established, then a log filename with that ip address will be created and logging will be done.
         */
 	int InitLogger(LogDest ldest,...);
-	// Function used to deinitialize the logger.
+	/** Function used to deinitialize the logger. */
 	void DeInitLogger();
 	// Logs are enabled.	
 	#if LOG_LEVEL<= LOG_LEVEL_INFO
 		#ifdef VARIADIC_MACROS
 			#define LogInfo(fmt, ...) LogStub_vm(LOG_LEVEL_INFO_PREFIX,LOG_MODULE_NAME,__FILE__,__func__, __LINE__ , fmt , ## __VA_ARGS__)
 		#else
+			/** Emit a log with Info level. */
 			int LogInfo(const char *fmt, ...);
 		#endif
 	#else
@@ -127,6 +102,7 @@ typedef enum LogDest
 		#ifdef VARIADIC_MACROS
 			#define LogDebug(fmt, ...) LogStub_vm(LOG_LEVEL_DEBUG_PREFIX,LOG_MODULE_NAME, __FILE__,__func__, __LINE__ , fmt , ## __VA_ARGS__)
 		#else
+			/** Emit a log with Debug level. */
 			int LogDebug(const char *fmt, ...);
 		#endif
 
@@ -138,6 +114,7 @@ typedef enum LogDest
 		#ifdef VARIADIC_MACROS	
 			#define LogCritical(fmt, ...) LogStub_vm(LOG_LEVEL_CRITICAL_PREFIX,LOG_MODULE_NAME, __FILE__,__func__, __LINE__ , fmt , ## __VA_ARGS__)
 		#else
+			/** Emit a log with Critical level. */
 			int LogCritical(const char *fmt, ...);
 		#endif
 	#else
@@ -145,8 +122,9 @@ typedef enum LogDest
 	#endif
 
 	#if LOG_LEVEL<= LOG_LEVEL_INFO
-		/* function declarations. */
+		/** Log Entry to a function. */
 		int FuncLogEntry(const char* funcName);
+		/** Log return from a function. */
 		int FuncLogExit(const char* funcName,const int lineNumber);
 		
 		#define LogFuncEntry()	FuncLogEntry(__func__)
@@ -165,6 +143,4 @@ typedef enum LogDest
 #endif /* __cplusplus */
 
 #endif /* __EXP_LOGGER_H__ */
-
-/** @} */
 
