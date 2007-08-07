@@ -9,6 +9,11 @@
   \li Log level  and Module name can be configured on per file basis.
   \li Zero Performance overhead when the logging is disabled.
 
+  \section SECTION_WHY Why bother to use logging in the first place?
+  Well if you think why should logging be used , here are a few advantages:
+  \li It saves you lot of time in debugging when the project grows bigger... imagine tracing through thousands of functions Vs analyzing the log and pin-pointing the issue.
+  \li Few of them argue, that the same can be achieved by adding printf()s... but during release mode, you need to remove the printf()s... and if you dont remove them, the performance overhead is still there.
+
   \section SECTION_TOC Table of Contents
   \li @subpage PAGE_LOG_CONCEPTS
   \li @subpage PAGE_USING_LOGGER
@@ -18,6 +23,7 @@
   \section SECTION_DOWNLOAD Downloading...
   liblogger is still in testing phase and currently works fine in linux/unix, no releases have been made yet, but you can get the latest sources from the <a href="http://sourceforge.net/svn/?group_id=202343"> subversion repository </a>
   porting of liblogger to windows is still under progress.
+
  */
 
 /** 
