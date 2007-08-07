@@ -1,0 +1,13 @@
+{ TestFuncInfo 
+[I]LogInfoTest:testapp/src_info.cpp:TestFuncInfo:14:Info Level log 0
+[D]LogInfoTest:testapp/src_info.cpp:TestFuncInfo:15:Debug level log
+[C]LogInfoTest:testapp/src_info.cpp:TestFuncInfo:16:Critical log
+TestFuncInfo : 19 }
+[D]LogDebugTest:testapp/src_debug.cpp:TestFuncDebug:15:Debug level log
+[C]LogDebugTest:testapp/src_debug.cpp:TestFuncDebug:16:Critical log
+[C]LogCriticalTest:testapp/src_critical.cpp:TestFuncCritical:16:Critical log
+{ TestFuncMin 
+[I]:testapp/src_min.cpp:TestFuncMin:11:Info Level log 0
+[D]:testapp/src_min.cpp:TestFuncMin:12:Debug level log
+[C]:testapp/src_min.cpp:TestFuncMin:13:Critical log
+TestFuncMin : 16 }
