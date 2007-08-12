@@ -1,0 +1,45 @@
+# Scons build script, 
+import sys
+import glob
+
+LIBLOGGER_SRCS = glob.glob('../src/*.c')
+LIBLOGGER_INCS = ['../inc']
+
+# create a static library
+StaticLibrary(
+		'logger',
+		LIBLOGGER_SRCS,
+		CPPPATH = LIBLOGGER_INCS,
+		CFLAGS = ['-Wall','-ggdb',]
+		)
+
+# create a shared library.
+SharedLibrary(
+		'logger',
+		LIBLOGGER_SRCS,
+		CPPPATH = LIBLOGGER_INCS,
+		CFLAGS = ['-Wall','-ggdb',]
+		)
+
+TESTAPP_SRCS = glob.glob('../testapp/*.cpp')
+TESTAPP_INCS = ['../inc']
+
+if 'logger_disable_test' in COMMAND_LINE_TARGETS:
+	# logger is disabled.
+	Program(
+		'logger_disable_test',
+		TESTAPP_SRCS,
+		CPPPATH = TESTAPP_INCS,
+		CPPFLAGS = ['-Wall','-ggdb', '-DDISABLE_ALL_LOGS',],
+		)
+else :
+	# program using the logger. 
+	Program(
+		'logger_test',
+		TESTAPP_SRCS,
+		CPPPATH = TESTAPP_INCS,
+		CPPFLAGS = ['-Wall','-ggdb',],
+		LIBS	= ['logger'],
+		LIBPATH	= ['.']
+	)
+
