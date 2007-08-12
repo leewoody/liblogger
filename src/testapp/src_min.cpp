@@ -8,12 +8,24 @@ int TestFuncMin()
 	// log the function entry log.
 	LogFuncEntry();
 
-	LogInfo("Info Level log %d" , 0);
+	LogTrace("Trace log %s %f", "Test", 1.066f);
 	LogDebug("Debug level log" );
-	LogCritical("Critical log" );
+	LogInfo("Info level log %d" , 0);
+	LogWarn("Warn level log" );
+	LogError("Error level log" );
+	LogFatal("Fatal level log" );
 
-	// log the function exit log.
-	LogFuncExit();
+	if(1)
+	{
+		// log the function exit .
+		LogFuncExit();
+		return 0;
+	}
+	else
+	{
+		// log the function exit .
+		LogFuncExit();
+		return -1;
+	}
 	
-	return 0;
 }

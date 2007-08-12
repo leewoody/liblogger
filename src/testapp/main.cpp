@@ -26,7 +26,8 @@ void TestLogToFile()
 {
 	InitLogger(LogToFile,"log.log");
 	TestLogFuncs();
-	// -- not calling deinit logger delibreately --
+	// -- not calling deinit logger delibreately, the current logger object will be
+	// auto deinitialized in the next call to InitLogger --
 	//DeInitLogger();
 }
 
@@ -46,11 +47,12 @@ void TestLogToSocket()
 	
 void TestLogFuncs()
 {
-	TestFuncInfo();
+	TestFuncWarn();
 	TestFuncDebug();
-	TestFuncCritical();
+	TestFuncFatal();
 	TestFuncNoLogs();
 	TestFuncMin();
+	TestNoFilename();
 
 	// crash testing, test for buffer overflow vulnerability, in case of socket logging, this huge log
 	// will be truncated.
