@@ -24,17 +24,25 @@
   liblogger is still in testing phase and currently works fine in linux/unix, no releases have been made yet, but you can get the latest sources from the <a href="http://sourceforge.net/svn/?group_id=202343"> subversion repository </a>
   porting of liblogger to windows is still under progress.
 
+  \section SECTION_LICENSE License
+  liblogger is distributed under <a href="http://www.gnu.org/licenses/lgpl-3.0.txt"> GNU LGPL license </a>.
+
  */
 
 /** 
-  \page PAGE_LOG_CONCEPTS liblogger concepts.
+  \page PAGE_LOG_CONCEPTS Few logging concepts.
+  Before you begin, pls go through this section, few of the concepts have been inspired by log4j
   \section SECTION_LOG_LEVELS Log Levels
+  The following log levels have been borrowed by <a href="http://logging.apache.org/log4j/docs/"> log4j </a>
   The following log levels are supported (in increasing order of \b priority):
-  \li Info (LOG_LEVEL_INFO)
-  \li Debug (LOG_LEVEL_DEBUG)
-  \li Critical (LOG_LEVEL_CRITICAL)
+  \li Trace	(LOG_LEVEL_TRACE) - Messages with fine details.
+  \li Debug 	(LOG_LEVEL_DEBUG) - Debug messages.
+  \li Info 	(LOG_LEVEL_INFO) - Some informational messages
+  \li Warn 	(LOG_LEVEL_WARN) - Warnings
+  \li Error 	(LOG_LEVEL_ERROR) - Errors during execution of a program, but the application can still continue to run.
+  \li Fatal	(LOG_LEVEL_FATAL) - Critical Errors which can lead the application to stop executing.
 
-  Each file using the logger has to define the logs of a particular level that should be used.
+  Each source file using the logger has to define the logs of a particular level that should be used.
 
   \section SECTION_LOGGING_FUNCTION Logging Functions.
   The following are the initalization functions:
@@ -42,9 +50,12 @@
   \li DeInitLogger() : Used to Deinitialize the logger.
 
   Logging functions ( usage is similar to <a href="http://en.wikipedia.org/wiki/Printf"> printf() </a> ) :
-  \li LogInfo() - Emit a log of level Info.
+  \li LogTrace() - Emit a log of level Trace.
   \li LogDebug() - Emit a log of level Debug.
-  \li LogCritical() - Emit a log of level Critical.
+  \li LogInfo() - Emit a log of level Info.
+  \li LogWarn() - Emit a log of level Warn.
+  \li LogError() - Emit a log of level Error.
+  \li LogFatal() - Emit a log of level Fatal.
 
   Log entry / exit from function:
   \li LogFuncEntry() 	: Logs the entry to a function, add it at the begining of a function.
@@ -55,7 +66,7 @@
 	To include the module name, the filename, the function name and the line number, the compiler must support variadic macros.
 
   \section SECTION_EXAMPLE Example of a log created.
-	\li The \ref LogFuncEntry "function entry" and \ref LogFuncExit "function exit" logs have the same priority of log level info. 
+	\li The \ref LogFuncEntry "function entry" and \ref LogFuncExit "function exit" logs have the same priority of log level Trace. 
 	\li A sample function entry log will look like this:
 	\code
 	{ FunctionName
@@ -70,7 +81,7 @@
 	this is to facilitate isolation of logs that appear between function calls and to identify nested function calls. Also
 	this is very helpful when the log is being veiwed in editors (like vim) which support braces matching.
 
-	\li The output of other log functions (LogDebug(), LogInfo(), LogCritical()) depend on the variadic macro support of the compiler.
+	\li The output of other log functions (LogDebug(), LogInfo(), ..... ) depend on the variadic macro support of the compiler.
 	If the variadic macro support is available, then a sample log will look like:
 	\verbatim
 	<LogLevelID>:<ModuleName>:<FileName>:<FunctionName>:<LineNumber>:<UserLog...>
@@ -124,7 +135,7 @@
 	\code
 	#include <liblogger_levels.h>
 	// The module name for logs done from this file.
-	#define LOG_MODULE_NAME	"LogCriticalTest"
+	#define LOG_MODULE_NAME	"LoggerTest"
 	#include <liblogger.h>
 	\endcode
 
@@ -147,8 +158,8 @@
 
 	\section SECTION_DISABLE Disabling the logger.
 	Lets say you want to disable all the log function calls, (for example during the release mode), this can be done either 
-	\li by #define ing the DISABLE_ALL_LOGS in file liblogger_config.h
-	\li or by adding the flag -DDISABLE_ALL_LOGS during the compilation stage.
+	\li by \#define ing the DISABLE_ALL_LOGS in file liblogger_config.h
+	\li or by adding the flag ( in gcc : -DDISABLE_ALL_LOGS ) during the compilation stage.
 	
 	\warning When the logger is disabled, all the log statements will become null statements, so \b never \b never write logs which includes a computation or a function call :
 	\code
