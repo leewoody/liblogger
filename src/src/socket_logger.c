@@ -17,7 +17,6 @@
 
 #ifdef _WIN32
 	#define  vsnprintf(buf,buf_size,fmt,ap) _vsnprintf(buf,buf_size,fmt,ap);
-	#define inline __inline
 #endif
 
 
@@ -26,7 +25,7 @@
 
 /** Helper function to print the logs to a buffer and send to a socket or
  * other consumer */
-static inline int sSendToSock(LogWriter *_this,const char* levelStr,
+static int sSendToSock(LogWriter *_this,const LogLevel logLevel,
 #ifdef VARIADIC_MACROS
 		const char* moduleName,
 		const char* file,const char* funcName, const int lineNum, 
@@ -38,6 +37,9 @@ int sSockFuncLogEntry(LogWriter *_this,const char* funcName);
 int sSockFuncLogExit(LogWriter* _this,const char* funcName,const int lineNumber);
 
 int sSockLoggerDeInit(LogWriter* _this);
+
+/* helper function to get the log prefix */
+static const char* sGetLogPrefix(const LogLevel logLevel);
 
 typedef struct SockLogWriter
 {
@@ -109,7 +111,7 @@ int InitSocketLogger(LogWriter** logWriter,char* server,int port)
 
 /** Helper function to print the logs to a buffer and send to a socket or
  * other consumer */
-static inline int sSendToSock(LogWriter *_this,const char* levelStr,
+static int sSendToSock(LogWriter *_this,const LogLevel logLevel,
 #ifdef VARIADIC_MACROS
 		const char* moduleName,
 		const char* file,const char* funcName, const int lineNum, 
@@ -127,7 +129,8 @@ static inline int sSendToSock(LogWriter *_this,const char* levelStr,
 		char buf[BUF_MAX];
 		int bytes = 0;
 #ifdef VARIADIC_MACROS
-		bytes = snprintf(buf,BUF_MAX-1,"%s:%s:%s:%s:%d:",levelStr,moduleName,file,funcName,lineNum);
+		bytes = snprintf(buf,BUF_MAX-1,"%s:%s:%s:%s:%d:",sGetLogPrefix(logLevel),
+				moduleName,file,funcName,lineNum);
 #else
 		bytes = snprintf(buf,BUF_MAX-1,"%s",levelStr);
 #endif
@@ -137,7 +140,7 @@ static inline int sSendToSock(LogWriter *_this,const char* levelStr,
 		buf[BUF_MAX-1] = 0;
 		if((-1 == bytes ) || (bytes>BUF_MAX-1))
 		{
-			fprintf(stderr,"WARNING : socket log truncated\n");
+			fprintf(stderr,"WARNING : socket log truncated, increase BUF_MAX\n");
 			bytes = BUF_MAX-1;
 		}
 		return send(slw->sock,buf,bytes,0);
@@ -206,4 +209,19 @@ int sSockLoggerDeInit(LogWriter* _this)
 #endif
 	}
 	return 0;
+}
+
+/* helper function to get the log prefix */
+static const char* sGetLogPrefix(const LogLevel logLevel)
+{
+	switch (logLevel)
+	{
+		case Trace:	return "[T]";
+		case Debug: return "[D]";
+		case Info:	return "[I]";
+		case Warn:	return "[W]";
+		case Error:	return "[E]";
+		case Fatal:	return "[F]";
+		default:	return "";
+	}
 }

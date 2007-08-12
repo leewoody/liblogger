@@ -93,7 +93,7 @@ void DeInitLogger()
 
 }
 
-int vsLogStub(const char* logLevelStr,
+int vsLogStub(LogLevel logLevel,
 #ifdef VARIADIC_MACROS
 		const char* moduleName,const char* file,
 		const char* funcName, const int lineNum,
@@ -102,7 +102,7 @@ int vsLogStub(const char* logLevelStr,
 {
 	CHECK_AND_INIT_LOGGER;
 
-	return pLogWriter->log(pLogWriter,logLevelStr,
+	return pLogWriter->log(pLogWriter,logLevel,
 #ifdef VARIADIC_MACROS
 			moduleName,file,funcName,lineNum,
 #endif
@@ -110,7 +110,7 @@ int vsLogStub(const char* logLevelStr,
 }
 
 #ifdef VARIADIC_MACROS
-int LogStub_vm(const char* logLevelStr,
+int LogStub_vm(LogLevel logLevel,
 		const char* moduleName,const char* file,
 		const char* funcName, const int lineNum,
 		const char* fmt,...)
@@ -119,19 +119,19 @@ int LogStub_vm(const char* logLevelStr,
 	va_list ap; 
 	int retVal = 0;
 	va_start(ap,fmt);
-	retVal = vsLogStub(logLevelStr,moduleName,file,funcName,lineNum,fmt,ap);
+	retVal = vsLogStub(logLevel,moduleName,file,funcName,lineNum,fmt,ap);
 	va_end(ap);
 	return retVal;
 }
 
 #else
 
-int LogInfo(const char* fmt,...)
+int LogTrace(const char* fmt,...)
 {
 	int retVal = 0;
 	va_list ap; 
 	va_start(ap,fmt);
-	retVal = vsLogStub(LOG_LEVEL_INFO_PREFIX,fmt,ap);
+	retVal = vsLogStub(Trace,fmt,ap);
 	va_end(ap);
 	return retVal;
 }
@@ -141,20 +141,51 @@ int LogDebug(const char* fmt,...)
 	int retVal = 0;
 	va_list ap; 
 	va_start(ap,fmt);
-	retVal = vsLogStub(LOG_LEVEL_DEBUG_PREFIX,fmt,ap);
+	retVal = vsLogStub(Debug,fmt,ap);
 	va_end(ap);
 	return retVal;
 }
 
-int LogCritical(const char* fmt,...)
+int LogInfo(const char* fmt,...)
 {
 	int retVal = 0;
 	va_list ap; 
 	va_start(ap,fmt);
-	retVal = vsLogStub(LOG_LEVEL_CRITICAL_PREFIX,fmt,ap);
+	retVal = vsLogStub(Info,fmt,ap);
 	va_end(ap);
 	return retVal;
-}	
+}
+
+int LogWarn(const char* fmt,...)
+{
+	int retVal = 0;
+	va_list ap; 
+	va_start(ap,fmt);
+	retVal = vsLogStub(Warn,fmt,ap);
+	va_end(ap);
+	return retVal;
+}
+
+int LogError(const char* fmt,...)
+{
+	int retVal = 0;
+	va_list ap; 
+	va_start(ap,fmt);
+	retVal = vsLogStub(Error,fmt,ap);
+	va_end(ap);
+	return retVal;
+}
+
+int LogFatal (const char* fmt,...)
+{
+	int retVal = 0;
+	va_list ap; 
+	va_start(ap,fmt);
+	retVal = vsLogStub(Fatal,fmt,ap);
+	va_end(ap);
+	return retVal;
+}
+
 
 #endif // VARIADIC_MACROS
 

@@ -10,12 +10,11 @@
 
 #ifdef _WIN32
 	#define  vsnprintf(buf,buf_size,fmt,ap) _vsnprintf(buf,buf_size,fmt,ap);
-	#define inline __inline
 #endif
 
 /** Helper function to write the logs to file */
-static inline int sWriteToFile(LogWriter *_this,
-		const char* levelStr,
+static int sWriteToFile(LogWriter *_this,
+		const LogLevel logLevel ,
 #ifdef VARIADIC_MACROS
 		const char* moduleName,
 		const char* file,const char* funcName, const int lineNum, 
@@ -27,7 +26,10 @@ static int sFileFuncLogEntry(LogWriter *_this,const char* funcName);
 static int sFileFuncLogExit(LogWriter * _this,
 		const char* funcName,const int lineNumber);
 
-int sFileLoggerDeInit(LogWriter* _this);
+static int sFileLoggerDeInit(LogWriter* _this);
+
+/* helper function to get the log prefix */
+static const char* sGetLogPrefix(const LogLevel logLevel);
 
 typedef struct FileLogWriter
 {
@@ -115,8 +117,8 @@ int InitFileLogger(LogWriter** logWriter,char* filename)
 }
 
 /** Helper function to write the logs to file */
-static inline int sWriteToFile(LogWriter *_this,
-		const char* levelStr,
+static int sWriteToFile(LogWriter *_this,
+		const LogLevel logLevel,
 #ifdef VARIADIC_MACROS
 		const char* moduleName,
 		const char* file,const char* funcName, const int lineNum, 
@@ -131,7 +133,7 @@ static inline int sWriteToFile(LogWriter *_this,
 	}
 	else
 	{
-		fprintf(flw->fp,levelStr);
+		fprintf(flw->fp,sGetLogPrefix(logLevel));
 #ifdef VARIADIC_MACROS
 		fprintf(flw->fp,"%s:%s:%s:%d:",moduleName,file,funcName,lineNum);
 #endif
@@ -189,4 +191,19 @@ int sFileLoggerDeInit(LogWriter* _this)
 	}
 	flw->fp = 0;
 	return 0;
+}
+
+/* helper function to get the log prefix */
+static const char* sGetLogPrefix(const LogLevel logLevel)
+{
+	switch (logLevel)
+	{
+		case Trace:	return "[T]";
+		case Debug: return "[D]";
+		case Info:	return "[I]";
+		case Warn:	return "[W]";
+		case Error:	return "[E]";
+		case Fatal:	return "[F]";
+		default:	return "";
+	}
 }
