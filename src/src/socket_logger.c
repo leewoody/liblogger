@@ -21,7 +21,7 @@
 
 
 /** The maximum size of the log. */
-#define BUF_MAX 512 
+#define BUF_MAX 1024
 
 /** Helper function to print the logs to a buffer and send to a socket or
  * other consumer */
