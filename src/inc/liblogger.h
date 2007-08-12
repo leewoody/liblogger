@@ -18,7 +18,7 @@ extern "C"
 
 /**Indicates the  Log Level for the source file */
 #ifndef LOG_LEVEL
-#define LOG_LEVEL LOG_LEVEL_INFO
+#define LOG_LEVEL LOG_LEVEL_TRACE
 #endif
 
 #ifndef LOG_MODULE_NAME
@@ -61,9 +61,12 @@ typedef enum LogDest
 // Logs needs to be disabled, warn the user.
 #warning Logger disabled.
 
-	#define LogInfo 		/* NOP */
+	#define LogTrace		/* NOP */
 	#define LogDebug 		/* NOP */
-	#define LogCritical 	/* NOP */
+	#define LogInfo 		/* NOP */
+	#define LogWarn			/* NOP */
+	#define LogError		/* NOP */
+	#define LogFatal		/* NOP */
 	#define LogFuncEntry()	/* NOP */
 	#define LogFuncExit()	/* NOP */
 	#define InitLogger 		/* NOP */
