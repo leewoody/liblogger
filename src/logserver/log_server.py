@@ -27,7 +27,7 @@ class Worker(threading.Thread):
 			self.file.flush()
 			if len(data):
 				print data
-				print "" #new line.
+				print "\n" #new line.
 		self.conn.close()
 		self.file.close()
 		print "Connection closed :" , self.address
