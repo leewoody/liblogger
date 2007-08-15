@@ -110,13 +110,14 @@
   $./logger_test
   \endverbatim
 
-  <li>
+  \n
+
   The supported build options can be viewed using "scons -h" command:
-  <li> RELEASE - used to enable O3 optimizations and exclude debugging symbols. example: scons RELEASE=1 </li>
-  <li> DISABLE_THREAD_SAFETY - used to disable thread safety checks, use if you have a single thread of execution. </li>
-  <li> DISABLE_SOCKET_LOGGER - used to disable network logger, use it if you are not using socket logging. </li>
-  <li> CROSS_COMPILE - used for cross compilation. </li>
-  </li>
+  \li RELEASE - used to enable O3 optimizations and exclude debugging symbols. example: scons RELEASE=1
+  \li DISABLE_THREAD_SAFETY - used to disable thread safety checks, use if you have a single thread of execution.
+  \li DISABLE_SOCKET_LOGGER - used to disable network logger, use it if you are not using socket logging.
+  \li CROSS_COMPILE - used for cross compilation.
+
   Examples :
   \li For cross compiling to arm without a socket logger : scons CROSS_COMPILE=arm-linux- DISABLE_SOCKET_LOGGER=1
   \li For compiling with O3 optimizations : scons RELEASE=1
@@ -132,17 +133,17 @@
   \li The Initialization can be done to log to a file
   \code
 	// The second arg is the filename. 
-	InitLogger(LogToFile,"log.log");
+	InitLogger(LogToFile,/* filename = */"log.log",/* reserved = */ 0);
   \endcode
   \li The Initialization can be done to log to console.
   \code
-	InitLogger(LogToConsole);
+	InitLogger(LogToConsole, /* reserved = */ 0);
   \endcode
 
   \li The Initialization can be done to log to socket.
   \code
 	// The second arg is the \c server and the third arg is the \c port.
-	InitLogger(LogToSocket,"127.0.0.1",50007);
+	InitLogger(LogToSocket,/* server = */ "127.0.0.1",/* port = */ 50007);
   \endcode
 	See section \ref SECTION_SOCK_LOG for more details.
 
