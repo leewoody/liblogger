@@ -31,9 +31,9 @@
 
 /** 
   \page PAGE_LOG_CONCEPTS Few logging concepts.
-  Before you begin, pls go through this section, few of the concepts have been inspired by log4j
   \section SECTION_LOG_LEVELS Log Levels
-  The following log levels have been borrowed by <a href="http://logging.apache.org/log4j/docs/"> log4j </a>
+  The application can have several log levels depending on the severity/importance.
+  The following log levels have been inspired by <a href="http://logging.apache.org/log4j/docs/"> log4j </a>
   The following log levels are supported (in increasing order of \b priority):
   \li Trace	(LOG_LEVEL_TRACE) - Messages with fine details.
   \li Debug 	(LOG_LEVEL_DEBUG) - Debug messages.
@@ -41,8 +41,8 @@
   \li Warn 	(LOG_LEVEL_WARN) - Warnings
   \li Error 	(LOG_LEVEL_ERROR) - Errors during execution of a program, but the application can still continue to run.
   \li Fatal	(LOG_LEVEL_FATAL) - Critical Errors which can lead the application to stop executing.
-
-  Each source file using the logger has to define the logs of a particular level that should be used.
+	
+	The Application using liblogger can decide the logs above a certain level it wants to see. For example, if a source file contains all the above logs and the desired log level is set as Warn, then only the Warn, Error, Fatal logs will appear, all the below logs will be made null statements without any runtime overhead. The log level can be set on per-source file basis, for example in a project with several src files, one file can have max log level of Info and another file can have max log level as Fatal. (more details in the comming sections...)
 
   \section SECTION_LOGGING_FUNCTION Logging Functions.
   The following are the initalization functions:
@@ -57,7 +57,7 @@
   \li LogError() - Emit a log of level Error.
   \li LogFatal() - Emit a log of level Fatal.
 
-  Log entry / exit from function:
+  Log entry / exit from function (same priority as of Trace level log):
   \li LogFuncEntry() 	: Logs the entry to a function, add it at the begining of a function.
   \li LogFuncExit()	: Logs return from a function, the best place to use it is before a \b return from a function.
 
@@ -99,10 +99,32 @@
 /** 
   \page PAGE_USING_LOGGER Using the liblogger
   \section SECTION_BUILD Building the liblogger.
-  Initially you need to build the liblogger. The build system uses <a href="http://scons.org"> scons </a>
+  \subsection SUBSEC_NIX Building for linux/unix platforms:
+  \li The build system uses <a href="http://scons.org"> scons </a>
   which can be freely obtained for any platform.
-  To build just run the command \b scons, which will create the static library and shared library under 
-  the folder \b src
+  \li To build just run the command \b scons, from the folder \b build, which will create the static library, shared library and a test app which uses the shared library. \n
+	If you interested to check network logging, then before running the test app, also start the log server, using command "python log_server.py" (in linux/unix) or simply clicking on the log_server.py on windows. If the log server is not running and connection fails, then the netowk logs will be redirected to a file with same name as of log server IP address.
+  To run the test app under linux/unix : 
+  \verbatim
+  $export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
+  $./logger_test
+  \endverbatim
+
+  <li>
+  The supported build options can be viewed using "scons -h" command:
+  <li> RELEASE - used to enable O3 optimizations and exclude debugging symbols. example: scons RELEASE=1 </li>
+  <li> DISABLE_THREAD_SAFETY - used to disable thread safety checks, use if you have a single thread of execution. </li>
+  <li> DISABLE_SOCKET_LOGGER - used to disable network logger, use it if you are not using socket logging. </li>
+  <li> CROSS_COMPILE - used for cross compilation. </li>
+  </li>
+  Examples :
+  \li For cross compiling to arm without a socket logger : scons CROSS_COMPILE=arm-linux- DISABLE_SOCKET_LOGGER=1
+  \li For compiling with O3 optimizations : scons RELEASE=1
+  \li To enable the option just use \b OptionName=1
+  
+  \subsection SUBSEC_WIN32 Building for windows
+  \li Use the scons script.... TODO.
+  
 
   \section SECTION_INIT Initializing the logger.
   \li	Before using the logger, you need to initialize the logger using InitLogger(), it is better to do it at the beginning of the program
@@ -187,11 +209,14 @@
 	\li If you have new ideas pls share them <a href="http://sourceforge.net/tracker/?group_id=202343&atid=981205"> here </a>.
 	\li If you have any doubts you can ask them at the 
 	<a href="http://sourceforge.net/forum/forum.php?forum_id=721800"> discussion forum </a> or  at the <a href="http://sourceforge.net/mail/?group_id=202343">  mailing list </a>
+	\li You can also mail the developer at : \image html nvemail.png
 	
 */
 
 /**
 	\page PAGE_ABOUT About liblogger
 	\li Special thanks to http://sourceforge.net 
-	\li 2007 - &copy; Vineeth Neelakant, \b email: <img src="nvemail.png"/> 
+	\li 2007 - &copy; Vineeth Neelakant, 
+	email: <img align="left" src="nvemail.png" alt="nvineeth _a_t_  gmail _ com" > 
+	\n
 */
