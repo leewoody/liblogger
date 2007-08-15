@@ -2,6 +2,10 @@
 #include "file_logger.h"
 #include "socket_logger.h"
 
+#ifndef DISABLE_THREAD_SAFETY
+#include "tLLMutex.h"
+#endif
+
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -9,6 +13,9 @@
 
 /** The log writer func ptr is initialized depending on the log destination. */
 static LogWriter *pLogWriter = 0;
+#ifndef DISABLE_THREAD_SAFETY
+static tLLMutex	sMutex = 0;
+#endif
 
 
 /** Macro to check if logger subsystem is initialize, 
@@ -32,6 +39,9 @@ int InitLogger(LogDest ldest,...)
 		fprintf(stderr,"Deinitializing the current log writer");
 		DeInitLogger();
 	}
+#ifndef DISABLE_THREAD_SAFETY
+	CreateMutex(&sMutex);
+#endif
 	switch(ldest)
 	{
 		case LogToSocket:
@@ -90,6 +100,11 @@ void DeInitLogger()
 {
 	pLogWriter->loggerDeInit(pLogWriter);
 	pLogWriter = 0;
+#ifndef DISABLE_THREAD_SAFETY
+	DestroyMutex(&sMutex);
+	sMutex = 0;
+#endif
+
 
 }
 
@@ -102,11 +117,17 @@ int vsLogStub(LogLevel logLevel,
 {
 	CHECK_AND_INIT_LOGGER;
 
+#ifndef DISABLE_THREAD_SAFETY
+	LockMutex(sMutex);
+#endif
 	return pLogWriter->log(pLogWriter,logLevel,
 #ifdef VARIADIC_MACROS
 			moduleName,file,funcName,lineNum,
 #endif
 			fmt,ap);
+#ifndef DISABLE_THREAD_SAFETY
+	UnLockMutex(sMutex);
+#endif
 }
 
 #ifdef VARIADIC_MACROS
