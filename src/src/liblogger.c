@@ -3,8 +3,13 @@
 #include "socket_logger.h"
 
 #ifndef DISABLE_THREAD_SAFETY
-#include "tLLMutex.h"
-#endif
+	#include "tLLMutex.h"
+	#define __LOCK_MUTEX 	if(sMutex) LockMutex(sMutex)
+	#define __UNLOCK_MUTEX	if(sMutex) UnLockMutex(sMutex)
+#else
+	#define __LOCK_MUTEX 	/* NOP */
+	#define __UNLOCK_MUTEX	/* NOP */
+#endif // DISABLE_THREAD_SAFETY
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -34,14 +39,18 @@ static tLLMutex	sMutex = 0;
 /** Function to initialize the logger. */
 int InitLogger(LogDest ldest,...)
 {
+	int retVal = 0;
 	if(pLogWriter)
 	{
 		fprintf(stderr,"\n [liblogger]Deinitializing the current log writer\n");
 		DeInitLogger();
 	}
 #ifndef DISABLE_THREAD_SAFETY
-	CreateMutex(&sMutex);
+	if(!sMutex)
+		CreateMutex(&sMutex);
 #endif
+	__LOCK_MUTEX;
+
 	switch(ldest)
 	{
 		case LogToSocket:
@@ -77,7 +86,8 @@ int InitLogger(LogDest ldest,...)
 				{
 					// control should never reach here, this should alwasy succeed.
 					fprintf(stderr,"\n [liblogger] could not initialize console logger \n");
-					return -1;
+					retVal = -1;
+					goto UNLOCK_RETURN;
 				}
 			}
 		break;
@@ -94,25 +104,31 @@ LOG_TO_FILE:
 				if( -1 == InitFileLogger(&pLogWriter,filename) )
 				{
 					fprintf(stderr,"\n [liblogger] could not initialize file logger, check file path/name \n");
-					return -1;
+					retVal = -1;
+					goto UNLOCK_RETURN;
 				}
 			}
 			break;
 	}
-	return 0; // success.
+	retVal = 0;
+UNLOCK_RETURN:
+	__UNLOCK_MUTEX;
+	return retVal; // success.
 }
 
 /** Deinitialize the logger, the file / socket is closed here. */
 void DeInitLogger()
 {
+	__LOCK_MUTEX;
 	pLogWriter->loggerDeInit(pLogWriter);
 	pLogWriter = 0;
+	__UNLOCK_MUTEX;
+
+	// TODO : CHECK THIS CONDITON.
 #ifndef DISABLE_THREAD_SAFETY
-	DestroyMutex(&sMutex);
-	sMutex = 0;
+	//DestroyMutex(&sMutex);
+	//sMutex = 0;
 #endif
-
-
 }
 
 int vsLogStub(LogLevel logLevel,
@@ -122,19 +138,20 @@ int vsLogStub(LogLevel logLevel,
 #endif
 	const char* fmt,va_list ap)
 {
+	int retVal = 0;
 	CHECK_AND_INIT_LOGGER;
 
-#ifndef DISABLE_THREAD_SAFETY
-	LockMutex(sMutex);
-#endif
-	return pLogWriter->log(pLogWriter,logLevel,
+	__LOCK_MUTEX;
+
+	retVal = pLogWriter->log(pLogWriter,logLevel,
 #ifdef VARIADIC_MACROS
 			moduleName,file,funcName,lineNum,
 #endif
 			fmt,ap);
-#ifndef DISABLE_THREAD_SAFETY
-	UnLockMutex(sMutex);
-#endif
+
+	__UNLOCK_MUTEX;
+
+	return retVal;
 }
 
 #ifdef VARIADIC_MACROS
@@ -219,14 +236,22 @@ int LogFatal (const char* fmt,...)
 
 int FuncLogEntry(const char* funcName)
 {
+	int retVal = 0;
 	CHECK_AND_INIT_LOGGER;
-	return pLogWriter->logFuncEntry(pLogWriter,funcName);
+	__LOCK_MUTEX;
+	retVal = pLogWriter->logFuncEntry(pLogWriter,funcName);
+	__UNLOCK_MUTEX;
+	return retVal;
 }
 
 int FuncLogExit(const char* funcName,const int lineNumber)
 {
+	int retVal = 0;
 	CHECK_AND_INIT_LOGGER;
-	return pLogWriter->logFuncExit(pLogWriter,funcName,lineNumber);
+	__LOCK_MUTEX;
+	retVal = pLogWriter->logFuncExit(pLogWriter,funcName,lineNumber);
+	__UNLOCK_MUTEX;
+	return retVal;
 }
 
 #endif /* DISABLE_ALL_LOGS */
