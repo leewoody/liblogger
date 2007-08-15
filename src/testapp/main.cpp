@@ -24,7 +24,7 @@ int main()
 
 void TestLogToFile()
 {
-	InitLogger(LogToFile,"log.log");
+	InitLogger(LogToFile,/* filename = */ "log.log", /*reserved = */ 0);
 	TestLogFuncs();
 	// -- not calling deinit logger delibreately, the current logger object will be
 	// auto deinitialized in the next call to InitLogger --
@@ -33,14 +33,14 @@ void TestLogToFile()
 
 void TestLogToConsole()
 {
-	InitLogger(LogToConsole);
+	InitLogger(LogToConsole, /* reserved = */ 0);
 	TestLogFuncs();
 	DeInitLogger();
 }
 
 void TestLogToSocket()
 {
-	InitLogger(LogToSocket,"127.0.0.1",50007);
+	InitLogger(LogToSocket,/* server address = */ "127.0.0.1",/* server port = */ 50007);
 	TestLogFuncs();
 	DeInitLogger();
 }
