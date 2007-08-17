@@ -129,10 +129,10 @@ static int sSendToSock(LogWriter *_this,const LogLevel logLevel,
 		char buf[BUF_MAX];
 		int bytes = 0;
 #ifdef VARIADIC_MACROS
-		bytes = snprintf(buf,BUF_MAX-1,"%s:%s:%s:%s:%d:",sGetLogPrefix(logLevel),
+		bytes = snprintf(buf,BUF_MAX-1,"\n%s:%s:%s:%s:%d:",sGetLogPrefix(logLevel),
 				moduleName,file,funcName,lineNum);
 #else
-		bytes = snprintf(buf,BUF_MAX-1,"%s",levelStr);
+		bytes = snprintf(buf,BUF_MAX-1,"\n%s",sGetLogPrefix(logLevel));
 #endif
 		// to be on safer side, check if required size is available.
 		if(bytes < (BUF_MAX -1) )
