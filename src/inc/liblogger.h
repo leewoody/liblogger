@@ -1,16 +1,18 @@
-
 #ifndef __EXP_LOGGER_H__
 #define __EXP_LOGGER_H__
-
-#include <liblogger_levels.h>
-
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
+#include <liblogger_levels.h>
 #include <liblogger_config.h>
+
+/** Liblogger major version */
+#define LIBLOGGER_MAJOR_VERSION 0
+/** Liblogger minor version */
+#define LIBLOGGER_MINOR_VERSION 1
 
 /*If the default log level is not define,
  * then the default log level is set to Trace. */
