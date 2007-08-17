@@ -53,27 +53,29 @@ int InitLogger(LogDest ldest,void* loggerInitParams)
 
 	switch(ldest)
 	{
+		/* log to a socket. */
 		case LogToSocket:
 			#ifndef DISABLE_SOCKET_LOGGER
 			{
 				if( -1 == InitSocketLogger(&pLogWriter,loggerInitParams) )
 				{
-					fprintf(stderr,"\n [liblogger] could not init socket logging, will be done to a file. \n");
-					ldest = LogToFile;
-					goto LOG_TO_FILE;
+					fprintf(stderr,"\n [liblogger] could not init socket logging \n");
+					retVal = -1;
+					goto UNLOCK_RETURN;
 				}
 			}
 			#else
 			{
-				fprintf(stderr,"\n [liblogger] Socket logger not enabled during build, use DISABLE_SOCKET_LOGGER=0, logging will be done to file.\n");
-				goto LOG_TO_FILE;
+				fprintf(stderr,"\n [liblogger] Socket logger not enabled during build\n");
+				retVal = -1;
+				goto UNLOCK_RETURN;
 			}
 			#endif
 			break;
 
+		/* log to a console. */
 		case LogToConsole:
 			{
-				/* log to a console. */
 				if( -1 == InitConsoleLogger(&pLogWriter,loggerInitParams) )
 				{
 					// control should never reach here, this should alwasy succeed.
@@ -83,11 +85,10 @@ int InitLogger(LogDest ldest,void* loggerInitParams)
 				}
 			}
 		break;
-LOG_TO_FILE:
+
+		/* log to a file. */
 		case LogToFile:
 			{
-				/* log to a file. */
-
 				if( -1 == InitFileLogger(&pLogWriter,loggerInitParams) )
 				{
 					fprintf(stderr,"\n [liblogger] could not initialize file logger, check file path/name \n");
