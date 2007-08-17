@@ -66,6 +66,11 @@ int InitConsoleLogger(LogWriter** logWriter,void* dest)
 	{
 		sFileLoggerDeInit((LogWriter*)&sFileLogWriter);
 	}
+	if ( (dest != stdout) && (dest != stderr) )
+	{
+		fprintf(stderr,"Incorrect init params for console logger, stdout will be used.\n");
+		dest = stdout;
+	}
 	sFileLogWriter.fp = stdout;
 	*logWriter = (LogWriter*)&sFileLogWriter;
 	return 0; // success!
