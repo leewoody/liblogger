@@ -1,10 +1,23 @@
 #ifndef __FILE_LOGGER_H__
 #define __FILE_LOGGER_H__
 
-#include "liblogger.h"
-#include "logger_object.h"
+#include <stdio.h>
 
-int InitFileLogger(LogWriter** logWriter,char* filename);
-int InitConsoleLogger(LogWriter** logWriter,void* dest);
+/** File open mode.
+ * \todo currently not supported, will be added in future.
+ * */
+typedef enum tFileOpenMode
+{
+	__unused,
+} tFileOpenMode;
+
+/** File Logger Initialization parameters. */
+typedef struct tFileLoggerInitParams
+{
+	/** The filename of the log. */
+	char* 			fileName;
+	/** The file open mode. */
+	tFileOpenMode 	fileOpenMode;
+}tFileLoggerInitParams;
 
 #endif // __FILE_LOGGER_H__

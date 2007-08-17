@@ -2,7 +2,7 @@
 #define __LOGGER_OBJECT_H__
 #include <stdarg.h>
 #include <stdio.h>
-#include  "liblogger.h"
+#include <liblogger/liblogger.h>
 
 /* fwd declaration. */
 struct LogWriter;

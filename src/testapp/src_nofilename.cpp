@@ -1,4 +1,4 @@
-#include <liblogger_levels.h>
+#include <liblogger/liblogger_levels.h>
 // For this file, we choose the logs with priority Info and higher, 
 // so logs with lesser priority i.e 
 // LogTrace(), LogDebug(), will NOT appear, THEY WILL BE NULL STATEMENTS WITH NO OVERHEAD
@@ -7,7 +7,7 @@
 #define DISABLE_FILENAMES
 // The module name for this file.
 #define LOG_MODULE_NAME	"ModuleInfoTest"
-#include <liblogger.h>
+#include <liblogger/liblogger.h>
 
 int TestNoFilename()
 {

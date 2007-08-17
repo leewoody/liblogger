@@ -1,6 +1,6 @@
-#include "liblogger.h"
-#include "file_logger.h"
-#include "socket_logger.h"
+#include <liblogger/liblogger.h>
+#include "file_logger_impl.h"
+#include "socket_logger_impl.h"
 
 #ifndef DISABLE_THREAD_SAFETY
 	#include "tLLMutex.h"
@@ -29,7 +29,7 @@ static tLLMutex	sMutex = 0;
 #define CHECK_AND_INIT_LOGGER	if(!pLogWriter)	\
 	{ 											\
 		fprintf(stderr,"\n[liblogger]liblogger not initialized, logging will be done to console (stdout)\n");\
-		if(InitLogger(LogToConsole)) 			\
+		if(InitLogger(LogToConsole,stdout)) 			\
 			return -1; 							\
 		if(!pLogWriter)							\
 			return -1;							\
@@ -37,7 +37,7 @@ static tLLMutex	sMutex = 0;
 
 
 /** Function to initialize the logger. */
-int InitLogger(LogDest ldest,...)
+int InitLogger(LogDest ldest,void* loggerInitParams)
 {
 	int retVal = 0;
 	if(pLogWriter)
@@ -56,15 +56,7 @@ int InitLogger(LogDest ldest,...)
 		case LogToSocket:
 			#ifndef DISABLE_SOCKET_LOGGER
 			{
-				/* Then 2nd arg is the server and the 3rd ard is the port */
-				va_list args;
-				char *server;
-				int port;
-				va_start(args,ldest);
-				server = va_arg(args,char*);
-				port = va_arg (args, int);
-				va_end(args);
-				if( -1 == InitSocketLogger(&pLogWriter,server,port) )
+				if( -1 == InitSocketLogger(&pLogWriter,loggerInitParams) )
 				{
 					fprintf(stderr,"\n [liblogger] could not init socket logging, will be done to a file. \n");
 					ldest = LogToFile;
@@ -82,7 +74,7 @@ int InitLogger(LogDest ldest,...)
 		case LogToConsole:
 			{
 				/* log to a console. */
-				if( -1 == InitConsoleLogger(&pLogWriter,0) )
+				if( -1 == InitConsoleLogger(&pLogWriter,loggerInitParams) )
 				{
 					// control should never reach here, this should alwasy succeed.
 					fprintf(stderr,"\n [liblogger] could not initialize console logger \n");
@@ -93,15 +85,10 @@ int InitLogger(LogDest ldest,...)
 		break;
 LOG_TO_FILE:
 		case LogToFile:
-			/* log to a file, the second arg is the filename. */
 			{
-				va_list args;
-				char *filename;
-				va_start(args,ldest);
-				filename  = va_arg(args,char*);
-				va_end(args);
+				/* log to a file. */
 
-				if( -1 == InitFileLogger(&pLogWriter,filename) )
+				if( -1 == InitFileLogger(&pLogWriter,loggerInitParams) )
 				{
 					fprintf(stderr,"\n [liblogger] could not initialize file logger, check file path/name \n");
 					retVal = -1;

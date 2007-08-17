@@ -1,11 +1,11 @@
-#include <liblogger_levels.h>
+#include <liblogger/liblogger_levels.h>
 // For this file, we choose the fatal logs, 
 // so logs with lesser priority i.e 
 // LogTrace(), LogDebug(), LogInfo(), LogWarn() and LogError() will NOT appear, THEY WILL BE NULL STATEMENTS WITH NO OVERHEAD
 #define LOG_LEVEL LOG_LEVEL_FATAL
 // The module name for this file.
 #define LOG_MODULE_NAME	"ModuleA"
-#include <liblogger.h>
+#include <liblogger/liblogger.h>
 
 int TestFuncFatal()
 {

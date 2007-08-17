@@ -1,6 +1,5 @@
-#include "file_logger.h"
+#include "file_logger_impl.h"
 #include <stdio.h>
-#include <logger_object.h>
 #include <memory.h>
 
 /** Default log file name, if InitLogger() is not done and a 
@@ -8,6 +7,7 @@
 #define FILE_NAME_LOG "NoNameLogFile.txt"
 #define MAX_PATH 255
 
+/* win32 support */
 #ifdef _WIN32
 	#define  vsnprintf(buf,buf_size,fmt,ap) _vsnprintf(buf,buf_size,fmt,ap);
 #endif
@@ -21,19 +21,25 @@ static int sWriteToFile(LogWriter *_this,
 #endif
 		const char* fmt,va_list ap);
 
+/** File Logger object function to log function entry */
 static int sFileFuncLogEntry(LogWriter *_this,const char* funcName);
 
+/** File Logger object function to log function exit */
 static int sFileFuncLogExit(LogWriter * _this,
 		const char* funcName,const int lineNumber);
 
+/** File Logger object function deinitialization function */
 static int sFileLoggerDeInit(LogWriter* _this);
 
-/* helper function to get the log prefix */
+/* helper function to get the log prefix , the log prefix is added to help in greping*/
 static const char* sGetLogPrefix(const LogLevel logLevel);
 
+/** The File logger object. */
 typedef struct FileLogWriter
 {
+	/** Base logger object. */
 	LogWriter	 base;
+	/** The log file pointer. */
 	FILE		*fp;
 }FileLogWriter;
 
@@ -45,22 +51,6 @@ static FileLogWriter sFileLogWriter =
 	.base.loggerDeInit	= sFileLoggerDeInit,
 	.fp					= 0
 };
-
-/** Helper function to prepend the current date and time to the log filename. */
-static void PrependDateTimeToLogFileName(char* outBuf,int bufMaxSize, char* filename)
-{
-#ifdef WIN32
-	SYSTEMTIME sysTime;
-	memset(&sysTime,0,sizeof(SYSTEMTIME));
-	GetLocalTime(&sysTime);
-	_snprintf(outBuf,bufMaxSize-1,"%d-%d-%d-%d-%d-%d-%s",sysTime.wYear,sysTime.wMonth,sysTime.wDay,
-			sysTime.wHour,sysTime.wMinute,sysTime.wSecond,filename);
-#else
-	// TODO 
-	strncpy(outBuf,filename,bufMaxSize-1);
-#endif
-	outBuf[bufMaxSize-1] = 0;
-}
 
 int InitConsoleLogger(LogWriter** logWriter,void* dest)
 {
@@ -81,37 +71,31 @@ int InitConsoleLogger(LogWriter** logWriter,void* dest)
 	return 0; // success!
 }
 
-int InitFileLogger(LogWriter** logWriter,char* filename)
+int InitFileLogger(LogWriter** logWriter,tFileLoggerInitParams* initParams)
 {
-	if(!logWriter)
+	if(!logWriter || !initParams)
 	{
 		fprintf(stderr,"Invalid args to function InitFileLogger\n");
 		return -1;
 	}
 	*logWriter = 0;
+	if(!initParams->fileName)
+	{
+		fprintf(stderr,"filename is null, error \n");
+		return -1;
+	}
 
+	/* deinitialize the file logger if already initialized. */
 	if (sFileLogWriter.fp)
-	{
 		sFileLoggerDeInit((LogWriter*)&sFileLogWriter);
+
+	sFileLogWriter.fp = fopen(initParams->fileName,"w");
+	if( !sFileLogWriter.fp )
+	{
+		fprintf(stderr,"could not open log file %s",initParams->fileName);
+		return -1;
 	}
 
-	{
-		char  tempBuf[MAX_PATH];
-		if(filename)
-		{
-			PrependDateTimeToLogFileName(tempBuf,MAX_PATH,filename);
-		}
-		else
-		{
-			PrependDateTimeToLogFileName(tempBuf,MAX_PATH,FILE_NAME_LOG);
-		}
-		sFileLogWriter.fp = fopen(tempBuf,"w");
-		if( !sFileLogWriter.fp )
-		{
-			fprintf(stderr,"could not open log file %s",tempBuf);
-			return -1;
-		}
-	}
 	*logWriter = (LogWriter*)&sFileLogWriter;
 	return 0; // success!
 }
@@ -144,6 +128,7 @@ static int sWriteToFile(LogWriter *_this,
 	}
 }
 
+/** File Logger object function to log function entry */
 static int sFileFuncLogEntry(LogWriter *_this,const char* funcName)
 {
 	FileLogWriter *flw = (FileLogWriter*) _this;
@@ -162,6 +147,7 @@ static int sFileFuncLogEntry(LogWriter *_this,const char* funcName)
 		
 }
 
+/** File Logger object function to log function exit */
 static int sFileFuncLogExit(LogWriter * _this,
 		const char* funcName,const int lineNumber)
 {
@@ -181,6 +167,7 @@ static int sFileFuncLogExit(LogWriter * _this,
 }
 
 
+/** File Logger object function deinitialization function */
 int sFileLoggerDeInit(LogWriter* _this)
 {
 	FileLogWriter *flw = (FileLogWriter*) _this;

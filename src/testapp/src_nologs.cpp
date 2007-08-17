@@ -1,8 +1,8 @@
-#include <liblogger_levels.h>
+#include <liblogger/liblogger_levels.h>
 // For this file, we disable all the logs. - NO LOGS FROM THIS FILE WILL APPEAR.
 // ALL LOGS IN THIS FILE WILL BE NULL STATEMENTS WITH NO OVERHEAD.
 #define LOG_LEVEL LOG_LEVEL_DISABLED
-#include <liblogger.h>
+#include <liblogger/liblogger.h>
 
 int TestFuncNoLogs()
 {

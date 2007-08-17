@@ -1,5 +1,8 @@
-#include <liblogger.h>
+#include <liblogger/liblogger.h>
+#include <liblogger/file_logger.h>
+#include <liblogger/socket_logger.h>
 #include "logtest.h"
+#include <memory.h>
 
 #define TEST_LOG_TO_SOCK
 
@@ -24,7 +27,12 @@ int main()
 
 void TestLogToFile()
 {
-	InitLogger(LogToFile,/* filename = */ "log.log", /*reserved = */ 0);
+	tFileLoggerInitParams fileInitParams;
+	// very important, memset to prevent breaks when new members are
+	// added to fileInitParams.
+	memset(&fileInitParams,0,sizeof(tFileLoggerInitParams));
+	fileInitParams.fileName = "log.log";
+	InitLogger(LogToFile,&fileInitParams);
 	TestLogFuncs();
 	// -- not calling deinit logger delibreately, the current logger object will be
 	// auto deinitialized in the next call to InitLogger --
@@ -33,14 +41,22 @@ void TestLogToFile()
 
 void TestLogToConsole()
 {
-	InitLogger(LogToConsole, /* reserved = */ 0);
+	// the init argument can be either stdout or stderr.
+	InitLogger(LogToConsole, stdout);
 	TestLogFuncs();
 	DeInitLogger();
 }
 
 void TestLogToSocket()
 {
-	InitLogger(LogToSocket,/* server address = */ "127.0.0.1",/* server port = */ 50007);
+	tSockLoggerInitParams sockInitParams;
+	// very important, memset to prevent breaks when new members are
+	// added to sockInitParams.
+	memset(&sockInitParams,0,sizeof(tSockLoggerInitParams));
+	sockInitParams.server 	= "127.0.0.1";
+	sockInitParams.port		= 50007;
+
+	InitLogger(LogToSocket,&sockInitParams);
 	TestLogFuncs();
 	DeInitLogger();
 }

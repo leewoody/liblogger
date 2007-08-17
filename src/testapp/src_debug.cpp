@@ -1,11 +1,11 @@
-#include <liblogger_levels.h>
+#include <liblogger/liblogger_levels.h>
 // For this file, we choose the logs with priority Debug and higher, 
 // so logs with lesser priority i.e 
 // LogTrace(), will NOT appear, THEY WILL BE NULL STATEMENTS WITH NO OVERHEAD
 #define LOG_LEVEL LOG_LEVEL_DEBUG
 // The module name for this file.
 #define LOG_MODULE_NAME	"ModuleDebugTest"
-#include <liblogger.h>
+#include <liblogger/liblogger.h>
 
 int TestFuncDebug()
 {

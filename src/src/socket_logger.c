@@ -1,4 +1,4 @@
-#include "socket_logger.h"
+#include "socket_logger_impl.h"
 
 #ifndef _WIN32
 #include <stdlib.h>
@@ -10,8 +10,8 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-
 #else
+#include <winsock2.h>
 #endif
 
 
@@ -86,9 +86,9 @@ static int ConnectToLogServer(char* server,int port)
 
 	return sock;
 }
-int InitSocketLogger(LogWriter** logWriter,char* server,int port)
+int InitSocketLogger(LogWriter** logWriter,tSockLoggerInitParams *initParams)
 {
-	if(!logWriter || !server )
+	if(!logWriter || !initParams || !initParams->server)
 	{
 		fprintf(stderr,"Invalid args to function InitSocketLogger\n");
 		return -1;
@@ -99,10 +99,10 @@ int InitSocketLogger(LogWriter** logWriter,char* server,int port)
 	{
 		sSockLoggerDeInit((LogWriter*)&sSockLogWriter);
 	}
-	sSockLogWriter.sock = ConnectToLogServer(server,port);
+	sSockLogWriter.sock = ConnectToLogServer(initParams->server,initParams->port);
 	if( -1 == sSockLogWriter.sock )
 	{
-		fprintf(stderr,"could not connect to log server %s:%d",server,port);
+		fprintf(stderr,"could not connect to log server %s:%d",initParams->server,initParams->port);
 		return -1;
 	}
 	*logWriter = (LogWriter*)&sSockLogWriter;

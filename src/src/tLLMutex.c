@@ -4,6 +4,7 @@
 /* -- UNIX implementation of the mutex. -- */
 
 #include <pthread.h>
+#include <stdlib.h>
 
 /** Create the mutex. */
 int CreateMutex(tLLMutex* mutex)

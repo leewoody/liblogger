@@ -6,8 +6,8 @@ extern "C"
 {
 #endif
 
-#include <liblogger_levels.h>
-#include <liblogger_config.h>
+#include <liblogger/liblogger_levels.h>
+#include <liblogger/liblogger_config.h>
 
 /** Liblogger major version */
 #define LIBLOGGER_MAJOR_VERSION 0
@@ -89,9 +89,10 @@ typedef enum LogDest
 	/** 
 	 * Function used to initialize the logger.
 	 * \param [in] ldest The log destination. see \ref LogDest for possible destinations.
+	 * \param [in] loggerInitParams The logger initialization parameters.
 	 * \returns 0 if successful, -1 if there is a failure.
 	 * */
-	int InitLogger(LogDest ldest,...);
+	int InitLogger(LogDest ldest,void* loggerInitParams);
 
 	/** Function used to deinitialize the logger. */
 	void DeInitLogger();
