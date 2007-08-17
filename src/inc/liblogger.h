@@ -4,10 +4,6 @@
 
 #include <liblogger_levels.h>
 
-/** WIN32 Hack. */
-#if defined(WIN32) || defined(_WIN32)
-#define __func__ __FUNCTION__
-#endif
 
 #ifdef __cplusplus
 extern "C"
@@ -16,11 +12,13 @@ extern "C"
 
 #include <liblogger_config.h>
 
-/**Indicates the  Log Level for the source file */
+/*If the default log level is not define,
+ * then the default log level is set to Trace. */
 #ifndef LOG_LEVEL
 #define LOG_LEVEL LOG_LEVEL_TRACE
 #endif
 
+/* If the module name is not defined, then the default module name. */
 #ifndef LOG_MODULE_NAME
 #define LOG_MODULE_NAME ""
 #endif
@@ -71,8 +69,13 @@ typedef enum LogDest
 	#define LogFuncExit()	/* NOP */
 	#define InitLogger 		/* NOP */
 	#define DeInitLogger()	/* NOP */
-
 #else
+
+	/* WIN32 support. */
+	#if defined(WIN32) || defined(_WIN32)
+	#define __func__ __FUNCTION__
+	#endif
+
 	// The logs are enabled.
 
 	#ifdef VARIADIC_MACROS	
@@ -81,12 +84,13 @@ typedef enum LogDest
 		const char* funcName, const int lineNum,
 		const char* fmt,...);
 	#endif
-	/** Function used to initialize the logger.
-	 If the logger is not initialized and a log function is called, then a default log file 
-         will be used, also if log to socket is used and if the connection to the server cannot be
-         established, then a log filename with that ip address will be created and logging will be done.
-        */
+	/** 
+	 * Function used to initialize the logger.
+	 * \param [in] ldest The log destination. see \ref LogDest for possible destinations.
+	 * \returns 0 if successful, -1 if there is a failure.
+	 * */
 	int InitLogger(LogDest ldest,...);
+
 	/** Function used to deinitialize the logger. */
 	void DeInitLogger();
 
@@ -105,6 +109,7 @@ typedef enum LogDest
 			int LogTrace(const char *fmt, ...);
 		#endif // VARIADIC_MACROS
 	#else
+		/* The chosen log level is greater, so this log should be disabled. */
 		#define LogTrace	/*NOP*/
 	#endif
 
@@ -122,6 +127,7 @@ typedef enum LogDest
 			int LogDebug(const char *fmt, ...);
 		#endif // VARIADIC_MACROS
 	#else
+		/* The chosen log level is greater, so this log should be disabled. */
 		#define LogDebug	/*NOP*/
 	#endif
 
@@ -139,6 +145,7 @@ typedef enum LogDest
 			int LogInfo(const char *fmt, ...);
 		#endif // VARIADIC_MACROS
 	#else
+		/* The chosen log level is greater, so this log should be disabled. */
 		#define LogInfo /*NOP*/
 	#endif
 
@@ -156,6 +163,7 @@ typedef enum LogDest
 			int LogWarn(const char *fmt, ...);
 		#endif // VARIADIC_MACROS
 	#else
+		/* The chosen log level is greater, so this log should be disabled. */
 		#define LogWarn	/*NOP*/
 	#endif
 
@@ -173,6 +181,7 @@ typedef enum LogDest
 			int LogError(const char *fmt, ...);
 		#endif // VARIADIC_MACROS
 	#else
+		/* The chosen log level is greater, so this log should be disabled. */
 		#define LogError	/*NOP*/
 	#endif
 
@@ -190,6 +199,7 @@ typedef enum LogDest
 			int LogFatal(const char *fmt, ...);
 		#endif // VARIADIC_MACROS
 	#else
+		/* The chosen log level is greater, so this log should be disabled. */
 		#define LogFatal	/*NOP*/
 	#endif
 
@@ -203,6 +213,7 @@ typedef enum LogDest
 		#define LogFuncExit()	FuncLogExit(__func__,__LINE__)
 		
 	#else
+		/* The chosen log level is greater, so this log should be disabled. */
 		#define LogFuncEntry()	/* NOP */
 		#define LogFuncExit()	/* NOP */
 	#endif
