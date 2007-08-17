@@ -23,11 +23,11 @@ class Worker(threading.Thread):
 			data = self.conn.recv(1024)
 			if not data: break
 			self.file.write(data)
-			self.file.write('\n')
+			#self.file.write('\n')
 			self.file.flush()
 			if len(data):
 				print data
-				print "\n" #new line.
+				#print "\n" #new line.
 		self.conn.close()
 		self.file.close()
 		print "Connection closed :" , self.address
