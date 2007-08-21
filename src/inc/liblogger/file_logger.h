@@ -23,7 +23,7 @@ typedef struct tFileLoggerInitParams
 	char* 			fileName;
 	/** The file open mode. */
 	tFileOpenMode 	fileOpenMode;
-	/** The rollback size to use, when \ref tFileLoggerInitParams::fileOpenMode "fileOpenMode"
+	/** The rollback size in \b bytes to use, when \ref tFileLoggerInitParams::fileOpenMode "fileOpenMode"
 	 * is equal \ref tFileOpenMode::RollbackMode "RollbackMode"
 	 * */
 	unsigned long	rollbackSize;
