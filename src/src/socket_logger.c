@@ -161,9 +161,9 @@ int sSockFuncLogEntry(LogWriter *_this,const char* funcName)
 		char buf[BUF_MAX];
 		int bytes;
 #ifdef WIN32
-		bytes = _snprintf(buf,BUF_MAX-1,"{ %s \n", funcName);
+		bytes = _snprintf(buf,BUF_MAX-1,"\n{ %s ", funcName);
 #else
-		bytes = snprintf(buf,BUF_MAX-1,"{ %s \n", funcName);
+		bytes = snprintf(buf,BUF_MAX-1,"\n{ %s", funcName);
 #endif
 		buf[BUF_MAX-1] = 0;
 		if((-1 == bytes ) || (bytes>BUF_MAX-1))
@@ -187,9 +187,9 @@ int sSockFuncLogExit(LogWriter* _this,const char* funcName,const int lineNumber)
 		char buf[BUF_MAX];
 		int bytes;
 #ifdef WIN32
-		bytes = _snprintf(buf,BUF_MAX-1,"%s : %d }\n", funcName,lineNumber);
+		bytes = _snprintf(buf,BUF_MAX-1,"\n%s : %d }", funcName,lineNumber);
 #else
-		bytes = snprintf(buf,BUF_MAX-1,"%s : %d }\n", funcName,lineNumber);
+		bytes = snprintf(buf,BUF_MAX-1,"\n%s : %d }", funcName,lineNumber);
 #endif
 		buf[BUF_MAX-1] = 0;
 		if((-1 == bytes ) || (bytes>BUF_MAX-1))
