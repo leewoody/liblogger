@@ -13,7 +13,7 @@ typedef void* tPLSocket;
  * \param [out] sock	The socket handle.
  * \returns -1 on failure and \a sock will be -1 , or else 0 on success and sock will be non zero.
  * */
-int CreateConnectedSocket(const char* server, int port, tPLSocket *sock);
+int PLCreateConnectedSocket(const char* server, int port, tPLSocket *sock);
 
 /** Send data over socket.
  * \param [in] tPLSocket 	The socket handle created via \ref CreateConnectedSocket.
@@ -21,11 +21,11 @@ int CreateConnectedSocket(const char* server, int port, tPLSocket *sock);
  * \param [in] dataSize		The size of data.
  * \return On success, the amount of bytes sent, -1 otherwise.
  * */
-int SockSend(tPLSocket sock,const void* data,const int dataSize);
+int PLSockSend(tPLSocket sock,const void* data,const int dataSize);
 
 /** Close the Socket.
  * \param [in,out] sock	The socket handle created via \ref CreateConnectedSocket.
  * */
-void DestroySocket(tPLSocket * sock);
+void PLDestroySocket(tPLSocket * sock);
 
 #endif // __PLSOCKET_H__
