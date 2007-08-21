@@ -6,6 +6,15 @@
   logger function is directly called. */
 #define FILE_NAME_LOG "NoNameLogFile.txt"
 #define MAX_PATH 255
+/** macro to check and rollback the file, once the indicated size is reached. */
+#define __CHECK_AND_ROLLBACK(flw) if(flw->rollbackSize != 0){					\
+				long _curOffset = ftell(flw->fp);					\
+				if((_curOffset != -1) && (_curOffset >= flw->rollbackSize))	 \
+				{	\
+					fprintf(flw->fp,"\n --- Rolling back log --- \n"); \
+					fseek(flw->fp,0L,SEEK_SET);\
+				}\
+			} \
 
 /* win32 support */
 #ifdef _WIN32
@@ -39,6 +48,9 @@ typedef struct FileLogWriter
 {
 	/** Base logger object. */
 	LogWriter	 base;
+	/** The rollback size, if \ref tFileOpenMode::RollbackMode is specified.
+	 * if rollback is not aplicable, then it will be 0*/
+	unsigned long rollbackSize;
 	/** The log file pointer. */
 	FILE		*fp;
 }FileLogWriter;
@@ -49,12 +61,15 @@ static FileLogWriter sFileLogWriter =
 	.base.logFuncEntry 	= sFileFuncLogEntry,
 	.base.logFuncExit	= sFileFuncLogExit,
 	.base.loggerDeInit	= sFileLoggerDeInit,
+	.rollbackSize		= 0,
 	.fp					= 0
 };
 
+/* Function to initialize the console logger, a console logger is a special case of file logger, 
+ * where the file is stdout / stderr
+ * */
 int InitConsoleLogger(LogWriter** logWriter,void* dest)
 {
-
 	if(!logWriter)
 	{
 		fprintf(stderr,"Invalid args to function InitFileLogger\n");
@@ -71,13 +86,18 @@ int InitConsoleLogger(LogWriter** logWriter,void* dest)
 		fprintf(stderr,"Incorrect init params for console logger, stdout will be used.\n");
 		dest = stdout;
 	}
-	sFileLogWriter.fp = stdout;
+	sFileLogWriter.rollbackSize = 0;
+	sFileLogWriter.fp = dest;
 	*logWriter = (LogWriter*)&sFileLogWriter;
 	return 0; // success!
 }
 
+/* Function to initialize the file logger.
+ * */
 int InitFileLogger(LogWriter** logWriter,tFileLoggerInitParams* initParams)
 {
+	/* default file open mode is write... */
+	char* fileOpenMode = "w";
 	if(!logWriter || !initParams)
 	{
 		fprintf(stderr,"Invalid args to function InitFileLogger\n");
@@ -94,12 +114,27 @@ int InitFileLogger(LogWriter** logWriter,tFileLoggerInitParams* initParams)
 	if (sFileLogWriter.fp)
 		sFileLoggerDeInit((LogWriter*)&sFileLogWriter);
 
-	sFileLogWriter.fp = fopen(initParams->fileName,"w");
+
+	/* check if append mode or rollback mode is specified and open the file accrodingly*/
+	if( (AppendMode == initParams->fileOpenMode) ||
+			(RollbackMode == initParams->fileOpenMode) )
+		fileOpenMode = "w+";
+	else
+		fileOpenMode = "w";
+
+	sFileLogWriter.fp = fopen(initParams->fileName,fileOpenMode);
 	if( !sFileLogWriter.fp )
 	{
 		fprintf(stderr,"could not open log file %s",initParams->fileName);
 		return -1;
 	}
+	/* if the file open is successful, and rollback mode is specified, note down the
+	 * rollback size. 
+	 * */
+	if(RollbackMode == initParams->fileOpenMode)
+		sFileLogWriter.rollbackSize = initParams->rollbackSize;
+	else
+		sFileLogWriter.rollbackSize = 0;
 
 	*logWriter = (LogWriter*)&sFileLogWriter;
 	return 0; // success!
@@ -129,6 +164,7 @@ static int sWriteToFile(LogWriter *_this,
 		vfprintf(flw->fp,fmt,ap); 
 		fprintf(flw->fp,"\n");
 		fflush(flw->fp);
+		__CHECK_AND_ROLLBACK(flw);
 		return 0;
 	}
 }
@@ -147,6 +183,7 @@ static int sFileFuncLogEntry(LogWriter *_this,const char* funcName)
 		int bytes_written = 0;
 		bytes_written = fprintf(flw->fp,"{ %s \n", funcName);
 		fflush(flw->fp);
+		__CHECK_AND_ROLLBACK(flw);
 		return bytes_written;
 	}
 		
@@ -167,6 +204,7 @@ static int sFileFuncLogExit(LogWriter * _this,
 		int bytes_written = 0;
 		bytes_written = fprintf(flw->fp,"%s : %d }\n", funcName,lineNumber);
 		fflush(flw->fp);
+		__CHECK_AND_ROLLBACK(flw);
 		return bytes_written;
 	}
 }
@@ -182,6 +220,7 @@ int sFileLoggerDeInit(LogWriter* _this)
 			fclose(flw->fp);
 	}
 	flw->fp = 0;
+	flw->rollbackSize = 0;
 	return 0;
 }
 
