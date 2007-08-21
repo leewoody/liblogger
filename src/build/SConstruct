@@ -40,7 +40,9 @@ else:
 # check if socket logger is disabled	
 disable_sock_logger = ARGUMENTS.get('DISABLE_SOCKET_LOGGER', 0)
 if int(disable_sock_logger) == 0:
-	LIBLOGGER_SRCS += [ '../src/socket_logger.c' ]
+	LIBLOGGER_SRCS += [ '../src/socket_logger.c' ,
+						'../src/platform_layer/posix/tPLSocket.c'
+					  ]
 else:	
 	env.Append(CPPDEFINES = ['DISABLE_SOCKET_LOGGER'] )
 

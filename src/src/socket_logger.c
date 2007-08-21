@@ -1,24 +1,5 @@
 #include "socket_logger_impl.h"
-
-#ifndef _WIN32
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#else
-#include <winsock2.h>
-#endif
-
-
-#ifdef _WIN32
-	#define  vsnprintf(buf,buf_size,fmt,ap) _vsnprintf(buf,buf_size,fmt,ap);
-#endif
-
+#include "tPLSocket.h"
 
 /** The maximum size of the log. */
 #define BUF_MAX 1024
@@ -44,7 +25,7 @@ static const char* sGetLogPrefix(const LogLevel logLevel);
 typedef struct SockLogWriter
 {
 	LogWriter	base;
-	int			sock;
+	tPLSocket	sock;
 }SockLogWriter;
 
 static SockLogWriter sSockLogWriter = 
@@ -57,35 +38,6 @@ static SockLogWriter sSockLogWriter =
 };
 
 
-/** Helper function to connect to a log server, 
-  \param [in] server The server to connect to, ex : 192.168.10.20
-  \param [in] port	 The Port of the server.
-  */
-static int ConnectToLogServer(char* server,int port)
-{
-	struct sockaddr_in their_addr; // connector's address information 
-	int sock = -1;
-
-	if ((sock = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
-		perror("socket");
-		return -1;
-	}
-
-	their_addr.sin_family = AF_INET;    // host byte order 
-	their_addr.sin_port = htons( port );  // short, network byte order 
-	their_addr.sin_addr.s_addr = inet_addr( server );
-	memset(&(their_addr.sin_zero), '\0', 8);  // zero the rest of the struct 
-
-	if (connect(sock, (struct sockaddr *)&their_addr,
-		sizeof(struct sockaddr)) == -1) 
-	{
-		close(sock);
-		perror("connect");
-		return -1;
-	}
-
-	return sock;
-}
 int InitSocketLogger(LogWriter** logWriter,tSockLoggerInitParams *initParams)
 {
 	if(!logWriter || !initParams || !initParams->server)
@@ -99,8 +51,7 @@ int InitSocketLogger(LogWriter** logWriter,tSockLoggerInitParams *initParams)
 	{
 		sSockLoggerDeInit((LogWriter*)&sSockLogWriter);
 	}
-	sSockLogWriter.sock = ConnectToLogServer(initParams->server,initParams->port);
-	if( -1 == sSockLogWriter.sock )
+	if( -1 == PLCreateConnectedSocket(initParams->server, initParams->port, &sSockLogWriter.sock) )
 	{
 		fprintf(stderr,"could not connect to log server %s:%d",initParams->server,initParams->port);
 		return -1;
@@ -143,7 +94,7 @@ static int sSendToSock(LogWriter *_this,const LogLevel logLevel,
 			fprintf(stderr,"WARNING : socket log truncated, increase BUF_MAX\n");
 			bytes = BUF_MAX-1;
 		}
-		return send(slw->sock,buf,bytes,0);
+		return PLSockSend(slw->sock,buf,bytes);
 	}
 }
 
@@ -168,7 +119,7 @@ int sSockFuncLogEntry(LogWriter *_this,const char* funcName)
 		buf[BUF_MAX-1] = 0;
 		if((-1 == bytes ) || (bytes>BUF_MAX-1))
 			bytes = BUF_MAX-1;
-		return send(slw->sock,buf,bytes,0);
+		return PLSockSend(slw->sock,buf,bytes);
 	}
 	
 }
@@ -194,19 +145,16 @@ int sSockFuncLogExit(LogWriter* _this,const char* funcName,const int lineNumber)
 		buf[BUF_MAX-1] = 0;
 		if((-1 == bytes ) || (bytes>BUF_MAX-1))
 			bytes = BUF_MAX-1;
-		return send(slw->sock,buf,bytes,0);
+		return PLSockSend(slw->sock,buf,bytes);
 	}
 }
 
 int sSockLoggerDeInit(LogWriter* _this)
 {
 	SockLogWriter *slw = (SockLogWriter*) _this;
-	if(slw && (-1 != slw->sock) )
+	if(slw)
 	{
-#ifdef _WIN32
-#else
-		close(slw->sock);
-#endif
+		PLDestroySocket(&slw->sock);
 	}
 	return 0;
 }
