@@ -112,10 +112,9 @@ void DeInitLogger()
 	pLogWriter = 0;
 	__UNLOCK_MUTEX;
 
-	// TODO : CHECK THIS CONDITON.
 #ifndef DISABLE_THREAD_SAFETY
-	//DestroyMutex(&sMutex);
-	//sMutex = 0;
+	DestroyMutex(&sMutex);
+	sMutex = 0;
 #endif
 }
 
