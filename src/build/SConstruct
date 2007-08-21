@@ -17,7 +17,7 @@ opts.Add('CROSS_COMPILE', 'Set this to cross compile, example : arm-linux- ' )
 Help(opts.GenerateHelpText(env))
 
 # liblogger source include path.
-LIBLOGGER_INCS = ['../inc']
+LIBLOGGER_INCS = ['../inc','../src/platform_layer/inc']
 # liblogger sources to include in build.
 LIBLOGGER_SRCS = [
 			'../src/liblogger.c',
@@ -33,7 +33,7 @@ if cross_compile != None :
 # check if 	thread safety should be disabled. 
 disable_thread_safety = ARGUMENTS.get('DISABLE_THREAD_SAFETY', 0)
 if int(disable_thread_safety) == 0:
-	LIBLOGGER_SRCS += [ '../src/tLLMutex.c' ]
+	LIBLOGGER_SRCS += [ '../src/platform_layer/posix/tPLMutex.c' ]
 else:	
 	env.Append(CPPDEFINES = ['DISABLE_THREAD_SAFETY'] )
 

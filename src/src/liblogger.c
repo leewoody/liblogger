@@ -3,7 +3,7 @@
 #include "socket_logger_impl.h"
 
 #ifndef DISABLE_THREAD_SAFETY
-	#include "tLLMutex.h"
+	#include "tPLMutex.h"
 	#define __LOCK_MUTEX 	if(sMutex) LockMutex(sMutex)
 	#define __UNLOCK_MUTEX	if(sMutex) UnLockMutex(sMutex)
 #else
@@ -19,7 +19,7 @@
 /** The log writer func ptr is initialized depending on the log destination. */
 static LogWriter *pLogWriter = 0;
 #ifndef DISABLE_THREAD_SAFETY
-static tLLMutex	sMutex = 0;
+static tPLMutex	sMutex = 0;
 #endif
 
 
