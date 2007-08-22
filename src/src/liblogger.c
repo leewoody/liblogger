@@ -4,8 +4,8 @@
 
 #ifndef DISABLE_THREAD_SAFETY
 	#include "tPLMutex.h"
-	#define __LOCK_MUTEX 	if(sMutex) LockMutex(sMutex)
-	#define __UNLOCK_MUTEX	if(sMutex) UnLockMutex(sMutex)
+	#define __LOCK_MUTEX 	if(sMutex) PLLockMutex(sMutex)
+	#define __UNLOCK_MUTEX	if(sMutex) PLUnLockMutex(sMutex)
 #else
 	#define __LOCK_MUTEX 	/* NOP */
 	#define __UNLOCK_MUTEX	/* NOP */
@@ -47,7 +47,7 @@ int InitLogger(LogDest ldest,void* loggerInitParams)
 	}
 #ifndef DISABLE_THREAD_SAFETY
 	if(!sMutex)
-		CreateMutex(&sMutex);
+		PLCreateMutex(&sMutex);
 #endif
 	__LOCK_MUTEX;
 
@@ -113,7 +113,7 @@ void DeInitLogger()
 	__UNLOCK_MUTEX;
 
 #ifndef DISABLE_THREAD_SAFETY
-	DestroyMutex(&sMutex);
+	PLDestroyMutex(&sMutex);
 	sMutex = 0;
 #endif
 }

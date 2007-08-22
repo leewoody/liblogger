@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 /** Create the mutex. */
-int CreateMutex(tPLMutex* mutex)
+int PLCreateMutex(tPLMutex* mutex)
 {
 	if(!mutex)
 		return -1;
@@ -21,7 +21,7 @@ int CreateMutex(tPLMutex* mutex)
 	}
 }
 /** Lock the mutex. */
-int LockMutex(tPLMutex mutex)
+int PLLockMutex(tPLMutex mutex)
 {
 	if(!mutex)
 		return -1;
@@ -34,7 +34,7 @@ int LockMutex(tPLMutex mutex)
 	
 }
 /** Unlock the mutex. */
-int UnLockMutex(tPLMutex mutex)
+int PLUnLockMutex(tPLMutex mutex)
 {
 	if(!mutex)
 		return -1;
@@ -47,7 +47,7 @@ int UnLockMutex(tPLMutex mutex)
 	
 }
 /** Destroy the mutex. */
-int DestroyMutex(tPLMutex* mutex)
+int PLDestroyMutex(tPLMutex* mutex)
 {
 	if( !mutex || !(*mutex) )
 		return -1;

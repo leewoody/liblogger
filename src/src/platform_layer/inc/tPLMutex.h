@@ -5,12 +5,12 @@
 typedef void* tPLMutex;
 
 /** Create the mutex. */
-int CreateMutex(tPLMutex* mutex);
+int PLCreateMutex(tPLMutex* mutex);
 /** Lock the mutex. */
-int LockMutex(tPLMutex mutex);
+int PLLockMutex(tPLMutex mutex);
 /** Release the mutex. */
-int UnLockMutex(tPLMutex mutex);
+int PLUnLockMutex(tPLMutex mutex);
 /** Destroy the mutex. */
-int DestroyMutex(tPLMutex* mutex);
+int PLDestroyMutex(tPLMutex* mutex);
 
 #endif // __T_PLMUTEX_H__
