@@ -3,7 +3,7 @@
 #include <liblogger/socket_logger.h>
 #include <memory.h>
 
-//#define TEST_APPEND
+#define TEST_APPEND
 
 void TestLogToFile();
 void TestLogFuncs();
@@ -25,7 +25,7 @@ void TestLogToFile()
 	fileInitParams.fileOpenMode = AppendMode;
 	#else
 	fileInitParams.fileOpenMode = RollbackMode;
-	fileInitParams.rollbackSize = 10 * 1024; /* 10 KB */
+	fileInitParams.rollbackSize = 4 * 1024; /* 4 KB */
 	#endif
 	InitLogger(LogToFile,&fileInitParams);
 	TestLogFuncs();
