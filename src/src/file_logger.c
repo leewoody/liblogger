@@ -1,4 +1,5 @@
 #include "file_logger_impl.h"
+#include "LLTimeUtil.h"
 #include <stdio.h>
 #include <memory.h>
 
@@ -10,6 +11,7 @@
 /* win32 support */
 #ifdef _WIN32
 	#define  vsnprintf(buf,buf_size,fmt,ap) _vsnprintf(buf,buf_size,fmt,ap);
+	#define	inline __inline
 #endif
 
 /** Helper function to write the logs to file */
@@ -70,6 +72,7 @@ static FileLogWriter sFileLogWriter =
  * */
 int InitConsoleLogger(LogWriter** logWriter,void* dest)
 {
+	char curDateTime[32];	
 	if(!logWriter)
 	{
 		fprintf(stderr,"Invalid args to function InitFileLogger\n");
@@ -90,6 +93,8 @@ int InitConsoleLogger(LogWriter** logWriter,void* dest)
 	sFileLogWriter.rollbackSize = 0;
 #endif // _ENABLE_LL_ROLLBACK_
 	sFileLogWriter.fp = dest;
+	if( !LLGetCurDateTime(curDateTime,sizeof(curDateTime)) )
+		fprintf(sFileLogWriter.fp,"\n----- Logging Started on %s -----\n", curDateTime);
 	*logWriter = (LogWriter*)&sFileLogWriter;
 	return 0; // success!
 }
@@ -137,20 +142,29 @@ int InitFileLogger(LogWriter** logWriter,tFileLoggerInitParams* initParams)
 		fprintf(stderr,"could not open log file %s",initParams->fileName);
 		return -1;
 	}
-#ifdef _ENABLE_LL_ROLLBACK_
-	/* if the file open is successful, and rollback mode is specified, note down the
-	 * rollback size. 
-	 * */
-	if(RollbackMode == initParams->fileOpenMode)
-	{
-		sFileLogWriter.rollbackSize = initParams->rollbackSize;
-		fseek(sFileLogWriter.fp,0L,SEEK_END);
-		__CHECK_AND_ROLLBACK(&sFileLogWriter);
-	}
 	else
-		sFileLogWriter.rollbackSize = 0;
-#endif // _ENABLE_LL_ROLLBACK_
+	{
+		/* file open success. */
+		char curDateTime[32];	
+		if( !LLGetCurDateTime(curDateTime,sizeof(curDateTime)) )
+			fprintf(sFileLogWriter.fp,"\n----- Logging Started on %s -----\n", curDateTime);
 
+#ifdef _ENABLE_LL_ROLLBACK_
+		/* if the file open is successful, and rollback mode is specified, note down the
+		 * rollback size. 
+		 * */
+		if(RollbackMode == initParams->fileOpenMode)
+		{
+			sFileLogWriter.rollbackSize = initParams->rollbackSize;
+			fseek(sFileLogWriter.fp,0L,SEEK_END);
+			__CHECK_AND_ROLLBACK(&sFileLogWriter);
+		}
+		else
+			sFileLogWriter.rollbackSize = 0;
+#endif // _ENABLE_LL_ROLLBACK_
+	}
+
+	/* Log the current date time when the log is started. */
 	*logWriter = (LogWriter*)&sFileLogWriter;
 	return 0; // success!
 }

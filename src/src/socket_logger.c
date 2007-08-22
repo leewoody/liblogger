@@ -1,5 +1,6 @@
 #include "socket_logger_impl.h"
 #include "tPLSocket.h"
+#include "LLTimeUtil.h"
 
 /** The maximum size of the log. */
 #define BUF_MAX 1024
@@ -55,6 +56,19 @@ int InitSocketLogger(LogWriter** logWriter,tSockLoggerInitParams *initParams)
 	{
 		fprintf(stderr,"could not connect to log server %s:%d",initParams->server,initParams->port);
 		return -1;
+	}
+	else
+	{
+		/* socket was opened successfully, emit the current date / time. */
+		char curDateTime[32];	
+		char tempBuf[128];
+		if( !LLGetCurDateTime(curDateTime,sizeof(curDateTime)) )
+		{
+			int bytes = snprintf(tempBuf,sizeof(tempBuf),"\n----- Logging Started on %s -----\n",curDateTime);
+			if( (bytes == -1) || (bytes > sizeof(tempBuf)) )
+				bytes = sizeof(tempBuf);
+			PLSockSend(sSockLogWriter.sock,tempBuf,bytes);
+		}
 	}
 	*logWriter = (LogWriter*)&sSockLogWriter;
 	return 0; // success!
