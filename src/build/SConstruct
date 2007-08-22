@@ -87,4 +87,12 @@ else :
 		LIBS	= ['logger'],
 		LIBPATH	= ['.']
 	)
+	# program using the logger, check append / rollback mode.
+	env.Program(
+		'file_logger_test',
+		glob.glob('../testapp/file_logger_tests/*.cpp'),
+		CPPPATH = TESTAPP_INCS,
+		LIBS	= ['logger'],
+		LIBPATH	= ['.']
+	)
 
