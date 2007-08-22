@@ -13,7 +13,7 @@
 typedef enum tFileOpenMode
 {
 	/** Indicates that the log file should be opened in append mode. */
-	AppendMode,
+	AppendMode = 0x2,
 #ifdef _ENABLE_LL_ROLLBACK_
 	/** Rollback Mode : The log file will be opened in append mode and will
 	 * roll back when the size indicated 
