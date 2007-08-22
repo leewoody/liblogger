@@ -22,6 +22,7 @@ LIBLOGGER_INCS = ['../inc','../src/platform_layer/inc']
 LIBLOGGER_SRCS = [
 			'../src/liblogger.c',
 			'../src/file_logger.c',
+			'../src/LLTimeUtil.c',
 				]
 # check for cross compilation.
 cross_compile = ARGUMENTS.get('CROSS_COMPILE')
