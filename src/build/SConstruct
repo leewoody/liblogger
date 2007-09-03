@@ -17,7 +17,7 @@ opts.Add('CROSS_COMPILE', 'Set this to cross compile, example : arm-linux- ' )
 Help(opts.GenerateHelpText(env))
 
 # liblogger source include path.
-LIBLOGGER_INCS = ['../inc','../src/platform_layer/inc']
+LIBLOGGER_INCS = ['../inc','../src/platform_layer/inc','../src/',]
 # liblogger sources to include in build.
 LIBLOGGER_SRCS = [
 			'../src/liblogger.c',
