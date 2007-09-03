@@ -72,7 +72,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../src/inc/liblogger ../src/testapp doc.h
+INPUT                  = ../src/inc/liblogger ../src/testapp ../src/testapp/file_logger_tests/ doc.h
 FILE_PATTERNS          = 
 RECURSIVE              = NO
 EXCLUDE                = 
