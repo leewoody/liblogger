@@ -57,14 +57,16 @@ static void __CHECK_AND_ROLLBACK(FileLogWriter* flw);
 
 static FileLogWriter sFileLogWriter = 
 {
-	.base.log = sWriteToFile,
-	.base.logFuncEntry 	= sFileFuncLogEntry,
-	.base.logFuncExit	= sFileFuncLogExit,
-	.base.loggerDeInit	= sFileLoggerDeInit,
+	{
+		/*.base.log				= */sWriteToFile,
+		/*.base.logFuncEntry	= */ sFileFuncLogEntry,
+		/*.base.logFuncExit		= */sFileFuncLogExit,
+		/*.base.loggerDeInit	= */sFileLoggerDeInit,
+	},
 #ifdef _ENABLE_LL_ROLLBACK_
-	.rollbackSize		= 0,
+	/*.rollbackSize		= */ 0,
 #endif // _ENABLE_LL_ROLLBACK_
-	.fp					= 0
+		/* .fp					= */ 0
 };
 
 /* Function to initialize the console logger, a console logger is a special case of file logger, 

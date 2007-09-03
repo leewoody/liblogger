@@ -1,6 +1,7 @@
 #include "socket_logger_impl.h"
 #include "tPLSocket.h"
 #include "LLTimeUtil.h"
+#include <win32_support.h>
 
 /** The maximum size of the log. */
 #define BUF_MAX 1024
@@ -31,11 +32,13 @@ typedef struct SockLogWriter
 
 static SockLogWriter sSockLogWriter = 
 {
-	.base.log 			= sSendToSock,
-	.base.logFuncEntry 	= sSockFuncLogEntry,
-	.base.logFuncExit	= sSockFuncLogExit,
-	.base.loggerDeInit	= sSockLoggerDeInit,
-	.sock				= 0
+	{
+		/* .base.log 			= */sSendToSock, 
+		/* .base.logFuncEntry 	= */sSockFuncLogEntry,
+		/* .base.logFuncExit	= */sSockFuncLogExit,
+		/* .base.loggerDeInit 	= */sSockLoggerDeInit,	
+	},
+	/* .sock  = */0
 };
 
 
