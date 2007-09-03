@@ -3,6 +3,7 @@
  * */
 #include "tPLMutex.h"
 #include <windows.h>
+#include <stdio.h>
 
 /** Create the mutex. */
 int PLCreateMutex(tPLMutex* mutex)
@@ -29,7 +30,7 @@ int PLLockMutex(tPLMutex mutex)
 {
 	if(!mutex)
 		return -1;
-	if( WaitForSingleObject(mutex) != WAIT_OBJECT_0 )
+	if( WaitForSingleObject(mutex,INFINITE) != WAIT_OBJECT_0 )
 	{
 		// locking failed.
 		return -1;

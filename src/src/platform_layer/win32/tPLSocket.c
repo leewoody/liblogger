@@ -5,6 +5,7 @@
 #include <winsock2.h>
 #include <winbase.h>
 #include <stdio.h>
+#include <win32_support.h>
 
 
 /* Function to create a \b connected socket.
