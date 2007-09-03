@@ -4,8 +4,18 @@
 #ifndef __PLSOCKET_H__
 #define __PLSOCKET_H__
 
+#if defined(WIN32) || (_WIN32)
+/* Windows */
+#include <winsock2.h>
 /** Abstract handle for socket. */
-typedef void* tPLSocket;
+typedef SOCKET tPLSocket;
+#elif defined(__unix) || defined(__linux)
+/* A Unix system */
+/** Abstract handle for socket. */
+typedef int tPLSocket;
+#else
+/* Unsupported platform. */
+#endif
 
 /** Function to create a \b connected socket.
  * \param [in]  server 	The log server.
