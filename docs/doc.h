@@ -28,7 +28,7 @@
  */
 
 /** 
-  \page SECTION_WHY Why bother to use logging in the first place?
+  \page PAGE_WHY_LOG Why bother to use logging in the first place?
   Well if you think why should logging be used , here are a few advantages:
   \li It saves you lot of time in debugging when the project grows bigger... 
   imagine tracing through thousands of functions Vs analyzing the log and pin-pointing the issue.
@@ -278,8 +278,14 @@
 	\li If you have any doubts you can ask them at the 
 	<a href="http://sourceforge.net/forum/forum.php?forum_id=721800"> discussion forum </a> or  at the <a href="http://sourceforge.net/mail/?group_id=202343">  mailing list </a>
 	\li You can also mail the developer at : \image html nvemail.png
-	
 */
+
+/**
+ * \page PAGE_LIMITATIONS Limitations
+ * Currently liblogger has the following limitations :
+ * \li Configuration using config file is not implemented yet. (The feature will added in future releases.)
+ * \li Log View tool, which highlights the logs is not implemented yet.
+ * */
 
 /**
 	\page PAGE_ABOUT About liblogger
