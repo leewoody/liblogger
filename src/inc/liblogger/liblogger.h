@@ -58,8 +58,10 @@ typedef enum LogDest
 
 
 #ifdef DISABLE_ALL_LOGS
+#ifdef __GNUC__
 // Logs needs to be disabled, warn the user.
 #warning Logger disabled.
+#endif // __GNUC__
 
 	#define LogTrace		/* NOP */
 	#define LogDebug 		/* NOP */
