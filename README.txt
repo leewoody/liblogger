@@ -5,7 +5,7 @@ License : GNU LGPL
 Website : http://liblogger.sourceforge.net
 ---------------------------------------------------------
 
-BUILDING
+BUILDING - UNIX
 ----------------
 liblogger uses scons (http://scons.org) build system.
 You may need to install scons from the above system.
@@ -14,6 +14,10 @@ To build run "scons" from the folder src/build.
 To see various build options, run the command "scons -h" under folder src/build.
 ex : To build in release mode with O3 optimization, use "scons RELEASE=1"
 ex : To cross compile for arm, use "scons CROSS_COMPILE=arm-linux- "
+
+BUILDING - WINDOWS
+----------------
+For windows, the Visual Studio solution is provided under build folder.
 
 DOCUMENTATION
 ----------------
