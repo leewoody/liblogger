@@ -1,4 +1,4 @@
-# Doxyfile 1.4.7
+# Doxyfile 1.5.0
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -14,7 +14,7 @@ REPEAT_BRIEF           = YES
 ABBREVIATE_BRIEF       = 
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
-FULL_PATH_NAMES        = NO
+FULL_PATH_NAMES        = YES
 STRIP_FROM_PATH        = 
 STRIP_FROM_INC_PATH    = 
 SHORT_NAMES            = YES
@@ -72,13 +72,17 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../src/inc/liblogger ../src/testapp ../src/testapp/file_logger_tests/ doc.h
+INPUT                  = ../src/inc/liblogger \
+                         ../src/testapp \
+                         ../src/testapp/file_logger_tests/ \
+                         doc.h
 FILE_PATTERNS          = 
 RECURSIVE              = NO
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
-EXAMPLE_PATH           = ./testapp ./docs/example
+EXAMPLE_PATH           = ./testapp \
+                         ./docs/example
 EXAMPLE_PATTERNS       = 
 EXAMPLE_RECURSIVE      = NO
 IMAGE_PATH             = ./docs/images/
@@ -125,7 +129,7 @@ TREEVIEW_WIDTH         = 250
 #---------------------------------------------------------------------------
 # configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
-GENERATE_LATEX         = 
+GENERATE_LATEX         = YES
 LATEX_OUTPUT           = latex
 LATEX_CMD_NAME         = latex
 MAKEINDEX_CMD_NAME     = makeindex
@@ -133,8 +137,8 @@ COMPACT_LATEX          = NO
 PAPER_TYPE             = a4wide
 EXTRA_PACKAGES         = 
 LATEX_HEADER           = 
-PDF_HYPERLINKS         = NO
-USE_PDFLATEX           = NO
+PDF_HYPERLINKS         = YES
+USE_PDFLATEX           = YES
 LATEX_BATCHMODE        = NO
 LATEX_HIDE_INDICES     = NO
 #---------------------------------------------------------------------------
