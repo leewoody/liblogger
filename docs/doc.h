@@ -9,22 +9,35 @@
   \li Log level  and Module name can be configured on per file basis.
   \li Zero Performance overhead when the logging is disabled.
 
-
-  \section SECTION_TOC Table of Contents
-  \li @subpage PAGE_WHY_LOG
-  \li @subpage PAGE_LOG_CONCEPTS
-  \li @subpage PAGE_USING_LOGGER
-  \li @subpage PAGE_FEEDBACK
-  \li @subpage PAGE_LIMITATIONS
-  \li @subpage PAGE_ABOUT
-
   \section SECTION_DOWNLOAD Downloading...
-  liblogger is still in testing phase and currently works fine in linux/unix, no releases have been made yet, but you can get the latest sources from the <a href="http://sourceforge.net/svn/?group_id=202343"> subversion repository </a>
-  porting of liblogger to windows is still under progress.
+  liblogger is still in development phase and no releases have been made yet,
+  but you can get the latest sources from the 
+  <a href="http://sourceforge.net/svn/?group_id=202343"> subversion repository </a>.
 
   \section SECTION_LICENSE License
   liblogger is distributed under <a href="http://www.gnu.org/licenses/lgpl-3.0.txt"> GNU LGPL license </a>.
 
+  \section SECTION_TOC Table of Contents
+  \li @subpage PAGE_WHY_LOG
+  \li @subpage PAGE_LOG_CONCEPTS
+  <hr>
+  \section Tutorial
+  \li @subpage SECTION_BUILD
+  \li @subpage SECTION_INCLUDING
+  \li @subpage SECTION_INIT
+  \li @subpage SECTION_CAL_LOG_FUNCS
+  \li @subpage SECTION_MODULE_NAME
+  \li @subpage SECTION_LOG_LEVEL
+  \li @subpage SECTION_ASC_GRP 
+  \li @subpage SECTION_DISABLE_FILENAME 
+  \li @subpage SECTION_DEINIT 
+  \li @subpage SECTION_DISABLE 
+  \li @subpage SECTION_SOCK_LOG 
+  \li @subpage SECTION_EXAMPLES 
+  <hr>
+  \li @subpage PAGE_FEEDBACK
+  \li @subpage PAGE_LIMITATIONS
+  \li @subpage PAGE_ABOUT
  */
 
 /** 
@@ -123,9 +136,9 @@
 
 
 /** 
-  \page PAGE_USING_LOGGER Using the liblogger
-  \section SECTION_BUILD Building the liblogger.
-  \subsection SUBSEC_NIX Building for linux/unix platforms:
+ 
+  \page SECTION_BUILD 1. Building the liblogger.
+  \section SUBSEC_NIX 1.1. Building for linux/unix platforms:
   \li The build system uses <a href="http://scons.org"> scons </a>
   which can be freely obtained for any platform.
   \li To build just run the command \b scons, from the folder \b build, which will create the static library, shared library and a test app which uses the shared library. \n
@@ -149,15 +162,53 @@
   \li For compiling with O3 optimizations : scons RELEASE=1
   \li To enable the option just use \b OptionName=1
   
-  \subsection SUBSEC_WIN32 Building for Windows platform
+  \section SUBSEC_WIN32 1.2. Building for Windows platform
   \li To build for Windows platform, the Visual Studio 2005 solution with console based test app
   is provided under folder src/build/liblogger_win32/
+  <hr>
+  Next : \ref SECTION_INCLUDING 
   
 
-  \section SECTION_INIT Initializing the logger.
-  \li	Before using the logger, you need to initialize the logger using InitLogger(), it is better to do it at the beginning of the program
-  for ex: main() or DllMain(). The example for this is can be found in the file main.cpp
-  \li The Initialization can be done to log to a file
+  \page SECTION_INCLUDING 2. Including the logger in your C / C++ Source files
+  The Following is a simple example which illustrates the basic usage of liblogger,
+  for more complex examples see section \ref SECTION_EXAMPLE "examples".
+  \li Each source file should \b atleast include the header liblogger.h, example \ref src_min.cpp
+	\code
+	#include <liblogger/liblogger.h>
+	\endcode
+
+	After including the above header, the log functions can be called.
+	For Example :
+	\code
+	#include <liblogger/liblogger.h>
+	int main(int argc, char** argv)
+	{
+		LogDebug(" Debug message... ");
+		LogInfo (" int val = %d ", 9);
+		// ......
+		LogFatal(" Fatal error has occured, ptr %#x ", 0XABCD );
+		// .... other log functions. ........
+		return 0;
+	}
+	\endcode
+
+	\sa 
+	For More examples , such as controlling the log level, associating a module name, see the 
+	section \ref SECTION_EXAMPLES "examples"
+
+	\li Previous : \ref SECTION_BUILD 
+	\li Next : \ref SECTION_INIT 
+
+  \page SECTION_INIT 3. Initializing the logger.
+  	Before using the logger, you (may) initialize the logger using InitLogger(), 
+	it is better to do it at the beginning of the program for ex: main() or DllMain(). 
+	The example for this is can be found in the file main.cpp
+
+	Initializing the logger is \b not mandatory, if any of the log functions are called without
+	initializing, then the default log destination is to console (stdout).
+
+  \section SUBSEC_INIT_FILE 3.1 Logging to File
+  The Initialization can be done to log to a file
   \code
 	tFileLoggerInitParams fileInitParams;
 	// very important, memset to prevent breaks when new members are
@@ -178,13 +229,15 @@
 	InitLogger(LogToFile,&fileInitParams);
   \endcode
 
-  \li The Initialization can be done to log to console.
+  \section SUBSEC_INIT_CONSOLE 3.2 Logging to console
+  The Initialization can be done to log to console.
   \code
 	// the init argument can be either stdout or stderr.
 	InitLogger(LogToConsole, stdout);
   \endcode
 
-  \li The Initialization can be done to log to socket.
+  \section SUBSEC_INIT_SOCK 3.3 Logging to a socket
+  The Initialization can be done to log to socket.
   \code
 	tSockLoggerInitParams sockInitParams;
 	// very important, memset to prevent breaks when new members are
@@ -196,20 +249,35 @@
   \endcode
 	See section \ref SECTION_SOCK_LOG for more details.
 
-	\li Calling the initialization function is not compulsory, if InitLogger() is not called, then 
-	the logs will be directed to \c stdout.
-	\li If you have already initialized the logger and want to change the log destination (for example, initially you were doing to a console, but during the course of execution, you decide to redirect the logs to a socket), then you can call InitLogger() again.
+	\b Note:If you have already initialized the logger and want to change the log destination
+	(for example, initially you were doing to a console, but during the course of execution, 
+	 you decide to redirect the logs to a socket), then you can call InitLogger() again.
 
-  \section SECTION_INCLUDING Including the logger in your C / C++ Source files
-  \li Each source file should atleast include the header liblogger.h, example \ref src_min.cpp
-	\code
-	#include <liblogger/liblogger.h>
-	\endcode
-  \subsection SUB_SECTION_MODULE_NAME Attaching a Module Name
+	<hr>
+	\li Previous : \ref SECTION_INCLUDING
+	\li Next : \ref SECTION_CAL_LOG_FUNCS
+*/
+
+/**
+	\page SECTION_CAL_LOG_FUNCS 4. Calling the Log Functions
+	Once the logger is initialized (which is not mandatory), you can call the log functions : 
+	LogTrace(), LogDebug(), LogInfo(), LogWarn(), LogError(), LogFatal(), and the usage is similar to 
+	printf.
+
+	\sa \ref SECTION_EXAMPLE "Examples".
+	<hr>
+	\li Previous : \ref SECTION_INIT
+	\li Next : \ref SECTION_MODULE_NAME
+*/
+
+/**
+  \page SECTION_MODULE_NAME 5. Attaching a Module Name to the logs.
   If you wish to attach a module name with the logs that appear from a (group of) file(s),
   the macro \c LOG_MODULE_NAME should be defined. 
   \b Note: The order of definition of macro LOG_MODULE_NAME is very important, 
-  it should be defined before including the header liblogger.h.
+  it should be defined before including the header liblogger.h , the following code snippet illustrates 
+  this :
+
 	\code
 	#include <liblogger/liblogger_levels.h>
 	// The module name for logs done from this file.
@@ -217,7 +285,13 @@
 	#include <liblogger/liblogger.h>
 	\endcode
 
-  \subsection SUB_SECTION_LOG_LEVEL Controlling Log Levels
+	<hr>
+	\li Previous : \ref SECTION_CAL_LOG_FUNCS
+	\li Next : \ref SECTION_LOG_LEVEL
+*/
+
+/**
+  \page SECTION_LOG_LEVEL 6. Controlling Log Level
   To control the level of logs that will appear from a (group of) file(s),
   the macro LOG_LEVEL should be define as shown below:
   \b Note: The order of definition of macros LOG_LEVEL and  LOG_MODULE_NAME is very important, 
@@ -231,54 +305,120 @@
 	#include <liblogger.h>
 	\endcode
 
-	\subsection SUB_SECTION_ASC_GRP Associating a module name / log level with a group of source files.
+	In the above example, all logs with priorit lesser than LOG_LEVEL (in this case LOG_LEVEL_TRACE), 
+	will not appear.
+
+	<hr>
+	\li Previous : \ref SECTION_MODULE_NAME
+	\li Next : \ref SECTION_ASC_GRP
+*/
+
+/**
+	\page SECTION_ASC_GRP 7. Associating a module name / log level with a group of source files.
 	Often in a project, a group of files belong to a specific module or a particular log level
-	is needed to be associated with a group of files, this can be easily done by including the above
-	example in a header, and including this header in the desired source files.
+	is needed to be associated with a group of files, this can be easily done by including the log details 
+	in a header commonly included by these source files.
+	For Example :
+	Declare a http_module_log.h with the following contents :
+	\code
+	#include <liblogger_levels.h>
+	// For this file, we choose logs of priority info and above.
+	#define LOG_LEVEL LOG_LEVEL_INFO
+	// The module name for logs done from this file.
+	#define LOG_MODULE_NAME	"HTTP Module"
+	#include <liblogger.h>
+	\endcode
 
-	\subsection SUB_SECTION_EXAMPLES Examples
-	The best way to understand is to look into the examples under folder <a href="files.html"> testapp </a>
+	Then include this header amoung the source files which need to have the same module name 
+	and log level.
 
-	\section SECTION_DEINIT DeInitializing the logger.
-	\li The logger can be deinitialized by calling the function DeInitLogger(),
-	and the logger will close the file/socket objects if any (depending on the destination.)
+
+	<hr>
+	\li Previous : \ref SECTION_LOG_LEVEL
+	\li Next : \ref SECTION_DISABLE_FILENAME
+
+	\page SECTION_DISABLE_FILENAME 8. Selectively Disabling Filenames from appearing in log.
+	Depending on the compilation path of the sources, the filenames might be very long and 
+	not desirable to appear in the log. To prevent filenames from appearing in the log, 
+	\#define DISABLE_FILENAMES before including
+	the header liblogger.h, the following example illustrates this :
+	\code
+	#include <liblogger/liblogger_levels.h>
+	// For this file, we choose the logs with priority Info and higher, 
+	// so logs with lesser priority i.e 
+	// LogTrace(), LogDebug(), will NOT appear, THEY WILL BE NULL STATEMENTS WITH NO OVERHEAD
+	#define LOG_LEVEL LOG_LEVEL_INFO
+	// We Choose not to include the filenames in the log generated from this source file.
+	#define DISABLE_FILENAMES
+	// The module name for this file.
+	#define LOG_MODULE_NAME	"ModuleInfoTest"
+	#include <liblogger/liblogger.h>
+	\endcode
+	<hr>
+	\li Previous : \ref SECTION_ASC_GRP
+	\li Next : \ref SECTION_DEINIT
+
+
+	\page SECTION_DEINIT 9. DeInitializing the logger.
+	At the end of program's execution, the logger can be deinitialized by calling the function DeInitLogger(),
+	and the logger will close the file/socket objects if any (depending on the initalization settings.)
 	and release all resources in use.
+	<hr>
+	\li Previous : \ref SECTION_DISABLE_FILENAME
+	\li Next : \ref SECTION_DISABLE
 
-	\section SECTION_DISABLE Disabling the logger.
+	\page SECTION_DISABLE 10. Disabling the logger.
 	Lets say you want to disable all the log function calls, (for example during the release mode), this can be done either 
 	\li by \#define ing the DISABLE_ALL_LOGS in file liblogger_config.h
 	\li or by adding the flag ( in gcc : -DDISABLE_ALL_LOGS ) during the compilation stage.
 	
 	\warning When the logger is disabled, all the log statements will become \b NULL statements,
-	so \b never \b never write logs which includes a computation or a function call :
+	so \b NEVER \b NEVER write logs which includes a computation or a function call :
 	\code
 	// The following code is NOT CORRECT
 	// The following statement will be null when the logger is disabled and the function 
 	// foo is never called, when logger is disabled.
 	LogDebug(" foo() returned %d " , foo());
 	\endcode
+	<hr>
+	\li Previous : \ref SECTION_DEINIT
+	\li Next : \ref SECTION_SOCK_LOG
 
-	\section SECTION_SOCK_LOG Logging to a Socket.
+	\page SECTION_SOCK_LOG 11. Log Server 
+	The log server can be used to capture the logs emitted, when initialized in LogToSocket mode.
 	To use logging to a socket:
 	\li Start the log server at the destination machine. The log server (log_server.py) requires python. (by default the log server will bind to port 50007)
-	\li Specify the server details with the call to InitLogger(), see section \ref SECTION_INIT for an example.
+	\li Specify the server details with the call to InitLogger(), see section \ref SUBSEC_INIT_SOCK for an example.
 	\li Make sure that the port on which the log server runs is not blocked by a firewall.
 	\li The log server can accept any number of connections, for each connection it creates a file with name of format 
 	\verbatim
  <day>-<month>-<year>-<HH>-<MM>-<SS>.log 
-	\endverbatim and write the logs to the file , as well displays it on the screen.
+	\endverbatim and write the logs to this file , as well displays it on the screen.
+	<hr>
+	\li Previous : \ref SECTION_DISABLE
+	\li Next : \ref SECTION_EXAMPLES
+
+	\page SECTION_EXAMPLES 12. Examples
+	The best way to understand is to look into the examples under folder <a href="files.html"> testapp </a>
+	<hr>
+	\li Previous : \ref SECTION_SOCK_LOG
 
  */
 
-/** 
-	\page PAGE_FEEDBACK Providing feedback / Doubts...
+/**
+	\page PAGE_FEEDBACK Providing feedback.... / Doubts??
 	Your support is required to improve this project.
-	\li Pls file the bug reports <a href="http://sourceforge.net/tracker/?group_id=202343&atid=981202">here</a>.
-	\li If you have new ideas pls share them <a href="http://sourceforge.net/tracker/?group_id=202343&atid=981205"> here </a>.
-	\li If you have any doubts you can ask them at the 
-	<a href="http://sourceforge.net/forum/forum.php?forum_id=721800"> discussion forum </a> or  at the <a href="http://sourceforge.net/mail/?group_id=202343">  mailing list </a>
+	\section SEC_BUGS Bugs?
+	Pls file the bug reports <a href="http://sourceforge.net/tracker/?group_id=202343&atid=981202">here</a>.
+	\section SEC_IDEAS Any new idea?
+	If you have new ideas pls share them 
+	<a href="http://sourceforge.net/tracker/?group_id=202343&atid=981205"> here </a>.
+	\section SEC_DBTS Doubts?
+	If you have any doubts  you can ask them at the 
+	\li <a href="http://sourceforge.net/mail/?group_id=202343">  Mailing list </a>
+	\li <a href="http://sourceforge.net/forum/forum.php?forum_id=721800"> Discussion forum </a> 
 	\li You can also mail the developer at : \image html nvemail.png
-*/
+ */
 
 /**
  * \page PAGE_LIMITATIONS Limitations
