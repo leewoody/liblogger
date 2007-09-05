@@ -1,4 +1,5 @@
 /* - The documentation - used with doxygen. */
+
 /**
   @mainpage liblogger : A logging framework for C / C++ 
   <div align="center"> <h3> http://liblogger.sourceforge.net/ - http://sourceforge.net/projects/liblogger </h3> </div>
@@ -34,6 +35,7 @@
   \li @subpage SECTION_DISABLE 
   \li @subpage SECTION_SOCK_LOG 
   \li @subpage SECTION_EXAMPLES 
+  \li @subpage SECTION_ANALYZE_LOG 
   <hr>
   \li @subpage PAGE_FEEDBACK
   \li @subpage PAGE_LIMITATIONS
@@ -402,6 +404,26 @@
 	The best way to understand is to look into the examples under folder <a href="files.html"> testapp </a>
 	<hr>
 	\li Previous : \ref SECTION_SOCK_LOG
+	\li Next : \ref SECTION_ANALYZE_LOG
+ */
+
+/**
+  \page SECTION_ANALYZE_LOG 13. Analyzing the logs
+  Depending on the priority of the log, the line starts with a string that indicates the type of
+  log.
+  For Example, Info logs start with [I], Warn logs start with [W], Fatal logs start with [F], and so on.
+  This can be used to filter out the desired logs, 
+  for example, to filter out all the fatal logs from the log file log.log, 
+  use (under windows, <a href="http://www.cygwin.com/"> cygwin </a> or <a href="http://gnuwin32.sourceforge.net/packages/grep.htm"> GNU Win32 grep </a> can be used.):
+  \verbatim
+	#grep "\[F\]" log.log
+  \endverbatim
+
+
+  The function entry and function exit logs have a open brace \b { and a close brace \b }.
+  This is very helpful when the log is viewed in a editor which supports parantheses matching (ex: vim, kate)
+  <hr>
+  \li Previous : \ref SECTION_EXAMPLES
 
  */
 
