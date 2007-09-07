@@ -1,6 +1,10 @@
+/**
+ * \file Minimalistic usage of liblogger, without bothering 
+ * about module name and log level.
+ * */
 // If you dont want to bother about log levels and module names,
 // then the minimum thing that needs to be done is to include the header below
-// and start logging. - NOTE ALL LOGS WILL APPEAR IN THIS CASE
+// and start logging. - NOTE LOGS WITH ALL PRIORITY WILL APPEAR IN THIS CASE
 #include <liblogger/liblogger.h>
 
 int TestFuncMin()

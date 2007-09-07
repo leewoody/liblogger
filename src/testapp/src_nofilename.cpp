@@ -1,3 +1,7 @@
+/**
+ * \file Sample file illustrating the selective disabling of filename
+ * from appearing in the logs generated from this file.
+ * */
 #include <liblogger/liblogger_levels.h>
 // For this file, we choose the logs with priority Info and higher, 
 // so logs with lesser priority i.e 

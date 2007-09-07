@@ -1,3 +1,6 @@
+/** 
+ * \file The main() file.
+ * */
 #include <liblogger/liblogger.h>
 #include <liblogger/file_logger.h>
 #include <liblogger/socket_logger.h>

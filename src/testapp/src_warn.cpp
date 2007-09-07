@@ -1,3 +1,7 @@
+/**
+ * \file Sample file illustrating the log priority usage.
+ * In this file, we choose logs of priority warn and higher.
+ * */
 #include <liblogger/liblogger_levels.h>
 // For this file, we choose the Warn level logs, 
 // so logs with lesser priority i.e 

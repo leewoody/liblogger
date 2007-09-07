@@ -1,3 +1,6 @@
+/**
+ * \file Sample file illustrating the usage of append mode.
+ * */
 #include <liblogger/liblogger.h>
 #include <liblogger/file_logger.h>
 #include <liblogger/socket_logger.h>
