@@ -14,10 +14,10 @@ void TestLogFuncs();
 int main()
 {
 	// log to a file in append mode.
-	TestLogToFile();
+	TestLogToFile_Append();
 }
 
-void TestLogToFile()
+void TestLogToFile_Append()
 {
 	tFileLoggerInitParams fileInitParams;
 	// very important, memset to prevent breaks when new members are
@@ -31,7 +31,7 @@ void TestLogToFile()
 }
 
 	
-void TestLogFuncs()
+void TestLogFuncs_Append()
 {
 	LogWarn("Warning message......");
 	LogDebug(" debug log  %#x", 8909);
