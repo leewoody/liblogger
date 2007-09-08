@@ -1,5 +1,6 @@
 /**
- * \file Sample file illustrating the selective disabling of filename
+ * \file 
+ * Sample file illustrating the selective disabling of filename
  * from appearing in the logs generated from this file.
  * */
 #include <liblogger/liblogger_levels.h>

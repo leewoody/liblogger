@@ -1,5 +1,6 @@
 /** 
- * \file The main() file.
+ * \file
+ * The main() file.
  * */
 #include <liblogger/liblogger.h>
 #include <liblogger/file_logger.h>

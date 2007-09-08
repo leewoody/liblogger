@@ -1,5 +1,6 @@
 /**
- * \file Sample file illustrating the usage of append mode.
+ * \file 
+ * Sample file illustrating the usage of append mode.
  * */
 #include <liblogger/liblogger.h>
 #include <liblogger/file_logger.h>

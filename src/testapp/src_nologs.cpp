@@ -1,5 +1,6 @@
 /**
- * \file Sample file illustrating selectively disabling the logs from
+ * \file 
+ * Sample file illustrating selectively disabling the logs from
  * appearing , from a source file.
  * */
 #include <liblogger/liblogger_levels.h>

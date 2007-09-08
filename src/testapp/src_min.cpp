@@ -1,5 +1,6 @@
 /**
- * \file Minimalistic usage of liblogger, without bothering 
+ * \file 
+ * Minimalistic usage of liblogger, without bothering 
  * about module name and log level.
  * */
 // If you dont want to bother about log levels and module names,

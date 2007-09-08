@@ -1,5 +1,6 @@
 /**
- * \file Sample file illustrating the log priority usage.
+ * \file 
+ * Sample file illustrating the log priority usage.
  * In this file, we choose logs of priority fatal.
  * */
 #include <liblogger/liblogger_levels.h>
