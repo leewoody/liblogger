@@ -7,13 +7,14 @@
   \b liblogger is a logging framework for C / C++, with the following features :
   \li Transparent Logging to file / console / network.
   \li Supports different logging levels.
-  \li Log level  and Module name can be configured on per file basis.
+  \li Customizable : Log level, Module name, etc., can be configured on per file basis.
   \li Zero Performance overhead when the logging is disabled.
+  \li Simple APIs similar to printf()
 
   \section SEC_COMPILERS Platforms / Compilers Supported.
   \li Compilers : gcc, Microsoft Visual C++ Compiler.
   \li Platforms : Unix / Linux, Windows
-  \li The presence of a platform layer makes it very easy to port for new platforms.
+  \li The presence of a platform layer makes it very easy to port to new platforms.
 
   \section SECTION_DOWNLOAD Downloading...
   liblogger is still in development phase and no releases have been made yet,
@@ -77,7 +78,7 @@
   \page PAGE_LOG_CONCEPTS Few logging concepts.
   \section SECTION_LOG_LEVELS Log Levels
   The application can have several log levels depending on the severity/importance.
-  The following log levels have been inspired by <a href="http://logging.apache.org/log4j/docs/"> log4j </a>
+  The following log levels have been inspired by <a href="http://logging.apache.org/log4j/docs/"> log4j </a>.
   The following log levels are supported (in increasing order of \b priority):
   \li Trace	(LOG_LEVEL_TRACE) - Messages with fine details.
   \li Debug 	(LOG_LEVEL_DEBUG) - Debug messages.
@@ -86,7 +87,14 @@
   \li Error 	(LOG_LEVEL_ERROR) - Errors during execution of a program, but the application can still continue to run.
   \li Fatal	(LOG_LEVEL_FATAL) - Critical Errors which can lead the application to stop executing.
 	
-	The Application using liblogger can decide the logs above a certain level it wants to see. For example, if a source file contains all the above logs and the desired log level is set as Warn, then only the Warn, Error, Fatal logs will appear, all the below logs will be made null statements without any runtime overhead. The log level can be set on per-source file basis, for example in a project with several src files, one file can have max log level of Info and another file can have max log level as Fatal. (more details in the comming sections...)
+	The Application using liblogger can decide the logs above a certain level it wants to appear.
+	For example, if a source file contains all the above logs and the desired log level is set as Warn, 
+	then only logs with equal / higher priority than Warn (i.e the Warn, Error, Fatal) logs will appear,
+	all the below logs will be made null statements during compilation phase without any runtime overhead. 
+	The log level can be set 
+	\li on per-source file basis, for example in a project with several src files, 
+	one file can have max log level of Info and another file can have max log level as Fatal. 
+	\li A group of files can share the same log settings.
 
   \section SECTION_LOGGING_FUNCTION Logging Functions.
   The following are the initalization functions:
@@ -101,15 +109,21 @@
   \li LogError() - Emit a log of level Error.
   \li LogFatal() - Emit a log of level Fatal.
 
-  The above functions are thread safe (unless thread safety is disabled during build).
 
   Log entry / exit from function (same priority as of Trace level log):
   \li LogFuncEntry() 	: Logs the entry to a function, add it at the begining of a function.
-  \li LogFuncExit()	: Logs return from a function, the best place to use it is before a \b return from a function.
+  \li LogFuncExit()	: Logs return from a function, the best place to use it is before a \c return from a function.
+
+  The above functions are \b thread \b safe (unless thread safety is disabled during build).
 
 	\section SECTION_VM Variadic Macros
 	The output of the the log depends on the variadic macro support of the compiler.
-	To include the module name, the filename, the function name and the line number, the compiler must support variadic macros.
+	To include the module name, the filename, the function name and the line number in the generated log
+	the compiler must support variadic macros.
+	The following compilers have this feature:
+	\li <a href="http://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html"> gcc </a>
+	\li Microsoft Visual C++ compiler 
+	(<a href="http://msdn2.microsoft.com/en-us/library/ms177415(VS.80).aspx"> form visual studio 2005 onwards. </a>)
 
   \section SECTION_EXAMPLE Example of a log created.
 	\li The \ref LogFuncEntry "function entry" and \ref LogFuncExit "function exit" logs have the same priority of log level Trace. 
@@ -149,7 +163,7 @@
   \li The build system uses <a href="http://scons.org"> scons </a>
   which can be freely obtained for any platform.
   \li To build just run the command \b scons, from the folder \b build, which will create the static library, shared library and a test app which uses the shared library. \n
-	If you interested to check network logging, then before running the test app, also start the log server, using command "python log_server.py" (in linux/unix) or simply clicking on the log_server.py on windows. If the log server is not running and connection fails, then the netowk logs will be redirected to a file with same name as of log server IP address.
+	To check network logging, then before running the test app, also start the log server, using command "python log_server.py" (in linux/unix) or simply clicking on the log_server.py on windows. If the log server is not running  and / or connection fails, then the netowk logs will be redirected to the console.
   To run the test app under linux/unix : 
   \verbatim
   $export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
@@ -219,7 +233,7 @@
   \code
 	tFileLoggerInitParams fileInitParams;
 	// very important, memset to prevent breaks when new members are
-	// added to fileInitParams.
+	// added to tFileLoggerInitParams.
 	memset(&fileInitParams,0,sizeof(tFileLoggerInitParams));
 	fileInitParams.fileName = "log.log";
 	InitLogger(LogToFile,&fileInitParams);
@@ -229,7 +243,7 @@
   \code
 	tFileLoggerInitParams fileInitParams;
 	// very important, memset to prevent breaks when new members are
-	// added to fileInitParams.
+	// added to tFileLoggerInitParams.
 	memset(&fileInitParams,0,sizeof(tFileLoggerInitParams));
 	fileInitParams.fileOpenMode = AppendMode;
 	fileInitParams.fileName = "log.log";
@@ -248,15 +262,16 @@
   \code
 	tSockLoggerInitParams sockInitParams;
 	// very important, memset to prevent breaks when new members are
-	// added to sockInitParams.
+	// added to tSockLoggerInitParams.
 	memset(&sockInitParams,0,sizeof(tSockLoggerInitParams));
-	sockInitParams.server 	= "127.0.0.1";
+	sockInitParams.server 	= "192.168.2.3";
 	sockInitParams.port		= 50007;
 	InitLogger(LogToSocket,&sockInitParams);
   \endcode
 	See section \ref SECTION_SOCK_LOG for more details.
 
-	\b Note:If you have already initialized the logger and want to change the log destination
+	\section SUBSEC_CHNG_LOG_DEST 3.4 Changing the log destination.
+	If the logger is already initialized and to change the log destination
 	(for example, initially you were doing to a console, but during the course of execution, 
 	 you decide to redirect the logs to a socket), then you can call InitLogger() again.
 
@@ -271,7 +286,7 @@
 	LogTrace(), LogDebug(), LogInfo(), LogWarn(), LogError(), LogFatal(), and the usage is similar to 
 	printf.
 
-	\sa \ref SECTION_EXAMPLE "Examples".
+	\sa \ref SECTION_EXAMPLES "Examples".
 	<hr>
 	\li Previous : \ref SECTION_INIT
 	\li Next : \ref SECTION_MODULE_NAME
@@ -292,6 +307,9 @@
 	#include <liblogger/liblogger.h>
 	\endcode
 
+	\section SEC_WHY_MODNAME Why Use a module name.
+	Associating a module with a (group of) file(s) is very helpful in greping and isolation of logs.
+
 	<hr>
 	\li Previous : \ref SECTION_CAL_LOG_FUNCS
 	\li Next : \ref SECTION_LOG_LEVEL
@@ -304,16 +322,18 @@
   \b Note: The order of definition of macros LOG_LEVEL and  LOG_MODULE_NAME is very important, 
   it should be defined before including the header liblogger.h.
 	\code
-	#include <liblogger_levels.h>
+	#include <liblogger/liblogger_levels.h>
 	// For this file, we choose logs of priority debug and above.
 	#define LOG_LEVEL LOG_LEVEL_DEBUG
 	// The module name for logs done from this file.
 	#define LOG_MODULE_NAME	"LogDebugTest"
-	#include <liblogger.h>
+	#include <liblogger/liblogger.h>
 	\endcode
 
-	In the above example, all logs with priorit lesser than LOG_LEVEL (in this case LOG_LEVEL_TRACE), 
+	In the above example, all logs with priorit lesser than LOG_LEVEL_DEBUG (in this case LOG_LEVEL_TRACE), 
 	will not appear.
+
+	If LOG_LEVEL macro is not defined, then \b all logs will be included.
 
 	<hr>
 	\li Previous : \ref SECTION_MODULE_NAME
@@ -328,12 +348,12 @@
 	For Example :
 	Declare a http_module_log.h with the following contents :
 	\code
-	#include <liblogger_levels.h>
+	#include <liblogger/liblogger_levels.h>
 	// For this file, we choose logs of priority info and above.
 	#define LOG_LEVEL LOG_LEVEL_INFO
 	// The module name for logs done from this file.
 	#define LOG_MODULE_NAME	"HTTP Module"
-	#include <liblogger.h>
+	#include <liblogger/liblogger.h>
 	\endcode
 
 	Then include this header amoung the source files which need to have the same module name 
@@ -369,7 +389,7 @@
 	\page SECTION_DEINIT 9. DeInitializing the logger.
 	At the end of program's execution, the logger can be deinitialized by calling the function DeInitLogger(),
 	and the logger will close the file/socket objects if any (depending on the initalization settings.)
-	and release all resources in use.
+	and release all resources in use. All logs done after deinitialization will be done to console. (unless initialized again  and the destination of log is changed.)
 	<hr>
 	\li Previous : \ref SECTION_DISABLE_FILENAME
 	\li Next : \ref SECTION_DISABLE
@@ -442,9 +462,9 @@
 	<a href="http://sourceforge.net/tracker/?group_id=202343&atid=981205"> here </a>.
 	\section SEC_DBTS Doubts?
 	If you have any doubts  you can ask them at the 
-	\li <a href="http://sourceforge.net/mail/?group_id=202343">  Mailing list </a>
-	\li <a href="http://sourceforge.net/forum/forum.php?forum_id=721800"> Discussion forum </a> 
-	\li You can also mail the developer at : \image html nvemail.png
+	\li <a href="http://sourceforge.net/mail/?group_id=202343">  Liblogger Mailing list </a>
+	\li <a href="http://sourceforge.net/forum/forum.php?forum_id=721800"> Liblogger Discussion forum </a> 
+	\li You can also mail the developer at : nvineeth __at__ gmail __dot__ com
  */
 
 /**
@@ -457,7 +477,6 @@
 /**
 	\page PAGE_ABOUT About liblogger
 	\li Special thanks to http://sourceforge.net 
-	\li 2007 - &copy; Vineeth Neelakant, 
-	email: <img align="left" src="nvemail.png" alt="nvineeth _a_t_  gmail _ com" > 
+	\li 2007 - &copy; Vineeth Neelakant, email : nvineeth __at__ gmail __dot__ com
 	\n
 */
