@@ -7,9 +7,8 @@
 #include <liblogger/socket_logger.h>
 #include <memory.h>
 
-
-void TestLogToFile();
-void TestLogFuncs();
+void TestLogToFile_Append();
+void TestLogFuncs_Append();
 
 int main()
 {
@@ -26,7 +25,7 @@ void TestLogToFile_Append()
 	fileInitParams.fileName = "log.log";
 	fileInitParams.fileOpenMode = AppendMode;
 	InitLogger(LogToFile,&fileInitParams);
-	TestLogFuncs();
+	TestLogFuncs_Append();
 	DeInitLogger();
 }
 
