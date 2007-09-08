@@ -3,12 +3,17 @@
 /**
   @mainpage liblogger : A logging framework for C / C++ 
   <div align="center"> <h3> http://liblogger.sourceforge.net/ - http://sourceforge.net/projects/liblogger </h3> </div>
-  \section _FEATURES What is liblogger?
+  \section _FEATURES Features
   \b liblogger is a logging framework for C / C++, with the following features :
   \li Transparent Logging to file / console / network.
   \li Supports different logging levels.
   \li Log level  and Module name can be configured on per file basis.
   \li Zero Performance overhead when the logging is disabled.
+
+  \section SEC_COMPILERS Platforms / Compilers Supported.
+  \li Compilers : gcc, Microsoft Visual C++ Compiler.
+  \li Platforms : Unix / Linux, Windows
+  \li The presence of a platform layer makes it very easy to port for new platforms.
 
   \section SECTION_DOWNLOAD Downloading...
   liblogger is still in development phase and no releases have been made yet,
@@ -428,7 +433,7 @@
  */
 
 /**
-	\page PAGE_FEEDBACK Providing feedback.... / Doubts??
+	\page PAGE_FEEDBACK Providing feedback and getting support
 	Your support is required to improve this project.
 	\section SEC_BUGS Bugs?
 	Pls file the bug reports <a href="http://sourceforge.net/tracker/?group_id=202343&atid=981202">here</a>.
