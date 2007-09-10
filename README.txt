@@ -1,7 +1,7 @@
 liblogger : A logging framework for C / C++
 ---------------------------------------------------------
-Copyright : Vineeth Neelakant - nvineeth _A_T_ gmail _D_O_T_ com 
-License : GNU LGPL (see files COPYING and COPYING.LESSER)
+Copyright : Vineeth Neelakant - nvineeth@gmail.com
+License : GNU Lesser General Public License(see files COPYING and COPYING.LESSER)
 Website : http://liblogger.sourceforge.net
 ---------------------------------------------------------
 
@@ -15,15 +15,29 @@ To see various build options, run the command "scons -h" under folder src/build.
 ex : To build in release mode with O3 optimization, use "scons RELEASE=1"
 ex : To cross compile for arm, use "scons CROSS_COMPILE=arm-linux- "
 
+This generates :
+* The shared library : liblogger.so
+* The static library : liblogger.lib
+* The test app, to run the test app :
+  $export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
+  $./logger_test
+
+
 BUILDING - WINDOWS
 ----------------
-For windows, the Visual Studio solution is provided under build folder.
+For windows, the Visual Studio solution is provided under folder src/build/liblogger_win32/.
+
+TEST APP
+----------
+The best way to understand the usage of liblogger is to go through the test apps :
+* src/testapp
+* src/testapp/file_logger_tests/
 
 DOCUMENTATION
 ----------------
 Documentation is provided at the website : http://liblogger.sourceforge.net,
 alternatively you can build the documentation  if you have doxygen installed.
-Under the folder docs/ run command "doxygen" and the html docs are generated in ./docs/docs/html
+Under the folder docs/ run command "gendoc.sh" and the html docs are generated in ./docs/docs/html
 
 DOUBTS / BUGS / SUGGESTIONS
 ----------------------------
@@ -33,7 +47,7 @@ If you have any doubts,
 
 Pls file the bug reports here: http://sourceforge.net/tracker/?group_id=202343&atid=981202
 
-Pls file the feature requests here: http://sourceforge.net/tracker/?group_id=202343&atid=981205
+Pls file the feature requests and new ideas here: http://sourceforge.net/tracker/?group_id=202343&atid=981205
 
 You can also mail the developer(s) at nvineeth _A_T_ gmail _D_O_T_ com
 
