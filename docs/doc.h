@@ -414,7 +414,7 @@
 	\page SECTION_SOCK_LOG 11. Log Server 
 	The log server can be used to capture the logs emitted, when initialized in LogToSocket mode.
 	To use logging to a socket:
-	\li Start the log server at the destination machine. The log server (log_server.py) requires python. (by default the log server will bind to port 50007)
+	\li Start the log server at the destination machine. The log server (log_server.py) requires python. (by default the log server will bind to port 50007. However, specific port can be specified as the first argument to the log server python script)
 	\li Specify the server details with the call to InitLogger(), see section \ref SUBSEC_INIT_SOCK for an example.
 	\li Make sure that the port on which the log server runs is not blocked by a firewall.
 	\li The log server can accept any number of connections, for each connection it creates a file with name of format 
