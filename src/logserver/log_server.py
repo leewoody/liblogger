@@ -25,7 +25,8 @@ HOST = ''                 # Symbolic name meaning the local host
 PORT = 50007              # Arbitrary non-privileged port
 
 if len(sys.argv) > 2:
-	print "usage : %s [port no]" % (sys.argv[0])
+	print "usage : %s [port]" % (sys.argv[0])
+	sys.exit(-2)
 elif len(sys.argv) == 2:
 	# The user has specified a port number, try to use it.
 	try:
