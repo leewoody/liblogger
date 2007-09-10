@@ -24,6 +24,25 @@ from datetime import date
 HOST = ''                 # Symbolic name meaning the local host
 PORT = 50007              # Arbitrary non-privileged port
 
+if len(sys.argv) > 2:
+	print "usage : %s [port no]" % (sys.argv[0])
+elif len(sys.argv) == 2:
+	# The user has specified a port number, try to use it.
+	try:
+		PORT = int(sys.argv[1])
+	except:
+		print "Invalid port no. %s specified" % (sys.argv[1])
+		sys.exit(-1)
+	# Check if the port falls in the valid range.
+	if PORT > 65535 or PORT < 0:
+		print " port number cannot exceed 65535 or lesser than 0"
+		sys.exit(-1)
+
+	print "Trying to use port ", PORT
+else:	
+	print " Port not specified Using default port " , PORT 
+
+
 class Worker(threading.Thread):
 	def __init__(self, conn, address):
 		threading.Thread.__init__(self)        
@@ -49,19 +68,24 @@ class Worker(threading.Thread):
 		print "Connection closed :" , self.address
 
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
-s.bind((HOST, PORT))
-s.listen(5)
-workers = []
-while 1:
-	try:
+# --------------------- main() ---------------------- 		
+try:
+	# create the socket
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+	# bind to the indicated port.
+	s.bind((HOST, PORT))
+	s.listen(5)
+	workers = []
+	while 1:
 		print "Waiting for connections on Port %d ....." % PORT
 		conn, addr = s.accept()
 		print 'Connected by', addr
 		worker = Worker(conn,addr) 
 		worker.start()
 		workers.append(worker)
-	except:
-		print 'caught an exception, exiting...'
-		sys.exit()
+except :
+	print 'caught an exception, exiting...'
+	print "Exception Details:", sys.exc_info()[0], sys.exc_info() [1]
+	sys.exit(-2)
+
