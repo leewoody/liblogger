@@ -17,9 +17,7 @@
   \li The presence of a platform layer makes it very easy to port to new platforms.
 
   \section SECTION_DOWNLOAD Downloading...
-  liblogger is still in development phase and no releases have been made yet,
-  but you can get the latest sources from the 
-  <a href="http://sourceforge.net/svn/?group_id=202343"> subversion repository </a>.
+  \li The latest releases can be downloaded from : http://sourceforge.net/projects/liblogger
 
   \section SECTION_LICENSE License
   liblogger is distributed under <a href="http://www.gnu.org/licenses/lgpl-3.0.txt"> GNU LGPL license </a>.
