@@ -42,8 +42,8 @@ Under the folder docs/ run command "gendoc.sh" and the html docs are generated i
 DOUBTS / BUGS / SUGGESTIONS
 ----------------------------
 If you have any doubts, 
+* at the users mailing list : http://sourceforge.net/mail/?group_id=202343
 * you can ask them at the discussion forum: http://sourceforge.net/forum/forum.php?forum_id=721800
-* or at the users mailing list : http://sourceforge.net/mail/?group_id=202343
 
 Pls file the bug reports here: http://sourceforge.net/tracker/?group_id=202343&atid=981202
 
