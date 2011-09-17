@@ -1,7 +1,7 @@
 liblogger : A logging framework for C / C++
 ---------------------------------------------------------
-Copyright : Vineeth Neelakant - nvineeth _at_ gmail _dot_ com
-License : GNU Lesser General Public License(see files COPYING and COPYING.LESSER)
+Developer : Vineeth Neelakant - nvineeth _at_ gmail _dot_ com
+License : Apache Software License 2.0
 Website : http://liblogger.sourceforge.net
 ---------------------------------------------------------
 
@@ -51,5 +51,3 @@ Pls file the feature requests and new ideas here: http://sourceforge.net/tracker
 
 You can also mail the developer(s) at nvineeth _A_T_ gmail _D_O_T_ com
 
--------------
-Thanks for your interest in liblogger, hope it will be helpful...
