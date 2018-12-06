@@ -1,0 +1,6 @@
+src/build/liblogger_win32/debug
+src/build/liblogger_win32/liblogger/Debug
+src/build/liblogger_win32/liblogger/Hanna_SDK_R01 (ARMV4I)
+src/build/liblogger_win32/liblogger/cedebug
+*.user
+src/build/liblogger_win32/liblogger_win32/Debug

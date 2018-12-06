@@ -1,0 +1,989 @@
+Index: CommandManager.cpp
+===================================================================
+--- CommandManager.cpp	(revision 2471)
++++ CommandManager.cpp	(working copy)
+@@ -433,7 +433,107 @@
+ 
+     while(true)
+     {
+-        PrintLog("Start running MainFlowThread");
++		tFileLoggerInitParams fileInitParams;
++		// very important, memset to prevent breaks when new members are
++		// added to fileInitParams.
++		memset(&fileInitParams,0,sizeof(tFileLoggerInitParams));
++		fileInitParams.fileName = "\\My Flash Disk\\log1.log";
++		InitLogger(LogToFile,&fileInitParams);
++
++		// crash testing, test for buffer overflow vulnerability, in case of socket logging, this huge log
++		// will be truncated.
++		LogDebug("abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			"abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz-abcdefghijklmnopqrstuvwxyz"
++			);
++
++        LogUtil::Info(L"Start running MainFlowThread", APP_CFG_DEFAULT_LOG_FILE_PATH);
+         WaitForSingleObject(commandManager->m_dialupHandle, INFINITE);
+ 
+         int listSize = commandManager->m_msgQueue->list_size();
+@@ -579,7 +679,7 @@
+                                 if(i == 2 && !bConnect)
+                                 {
+                                     //PrintLog("Retry connect socket 3 times");
+-                                    PrintLog("Go to Part B");
++                                    LogUtil::Info(L"Go to Part B", APP_CFG_DEFAULT_LOG_FILE_PATH);
+                                     SetEvent(commandManager->m_suspendHandle);//can suspend
+                                     NetworkUtil::CheckLteStatus();
+                                     //Part B
+Index: Communication/marker/Marker.cpp
+===================================================================
+--- Communication/marker/Marker.cpp	(revision 2471)
++++ Communication/marker/Marker.cpp	(working copy)
+@@ -267,9 +267,12 @@
+ {
+   messageCount = FileUtil::ReadNumeral(PATH_MESSAGE_COUNT);
+ 
+-  CStringA log;
+-  log.Format("Load message count : %d", messageCount);
+-  LogUtil::Info(log, "Marker::LoadMessageCount", APP_CFG_DEFAULT_LOG_FILE_PATH);
++  //CStringA log;
++  //log.Format("Load message count : %d", messageCount);
++  TCHAR  log[255];
++  wsprintf(log, L"Load message count : %d", messageCount);
++
++  LogUtil::Info(log, L"Marker::LoadMessageCount", APP_CFG_DEFAULT_LOG_FILE_PATH);
+ }
+ 
+ void Marker::IncreaseAccOn()
+Index: Global/Global.cpp
+===================================================================
+--- Global/Global.cpp	(revision 2471)
++++ Global/Global.cpp	(working copy)
+@@ -13,7 +13,8 @@
+ #include "NDRManager.h"
+ #include <list>
+ #include "comutil.h"
+-//#include "warnings.h"
++#include "warnings.h"
++#include "nclog.h"
+ 
+ float  flDistance = 0; 
+ float  flTotalDistance = 0; 
+@@ -276,7 +277,7 @@
+ 	}
+ 	else
+ 	{
+-		LogUtil::Info("Open file fail", "PrintToFile_GPS_INS" , APP_CFG_DEFAULT_LOG_FILE_PATH);
++		LogUtil::Info(L"Open file fail",   APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 	}
+ #endif
+ 	return 1;
+@@ -325,7 +326,7 @@
+ 	}
+ 	else
+ 	{
+-		LogUtil::Info("Open file fail", "PrintToFile_INS" , APP_CFG_DEFAULT_LOG_FILE_PATH);
++		LogUtil::Info(L"Open file fail",   APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 	}
+ 	/*
+ 	// write info to file
+@@ -431,7 +432,7 @@
+ 	}
+ 	else
+ 	{
+-		LogUtil::Info("Open file fail", "PrintToFile_Sensors" , APP_CFG_DEFAULT_LOG_FILE_PATH);
++		LogUtil::Info(L"Open file fail",   APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 	}
+ 
+ 	/*
+@@ -493,7 +494,7 @@
+ 	}
+ 	else
+ 	{
+-		LogUtil::Info("Open file fail", "PrintToFile_GPS" , APP_CFG_DEFAULT_LOG_FILE_PATH);
++		LogUtil::Info(L"Open file fail",   APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 	}
+ #endif
+ 	return 1;
+@@ -515,6 +516,26 @@
+ 	return 1;
+ }
+ 
++
++BOOL PrintToFile_INSEx2(TCHAR *strINS)
++{
++	if (b_Into_System_Suspend == TRUE)
++		return 0;
++#if 1
++	SYSTEMTIME systemTime;
++	GetLocalTime(&systemTime);
++	TCHAR  INSFile[255];
++	char  INSFileA[255];
++
++	wsprintf(INSFile, L"\\My Flash Disk\\INS%02u%02u.txt",systemTime.wMonth,systemTime.wDay);
++	wcstombs(INSFileA, INSFile, sizeof(INSFile)/sizeof(TCHAR));
++
++	nclog(INSFileA, strINS);
++
++#endif
++	return 1;
++}
++
+ BOOL PrintToFile_SensorsEx(CString strSensors)
+ {
+ 	if (b_Into_System_Suspend == TRUE)
+@@ -702,10 +723,13 @@
+ 		SYSTEMTIME localTime;
+ 		GetLocalTime(&localTime);
+ 		SystemTimeToFileTime(&localTime, &fileTime);
+-		CStringA log;
+-		log.Format("Get Local time %u/%u/%u %u:%u:%u", localTime.wYear, localTime.wMonth, localTime.wDay, localTime.wHour, localTime.wMinute, localTime.wSecond);
++		//CStringA log;
++		//log.Format("Get Local time %u/%u/%u %u:%u:%u", localTime.wYear, localTime.wMonth, localTime.wDay, localTime.wHour, localTime.wMinute, localTime.wSecond);
++		TCHAR  log[255];
++		wsprintf(log, L"Get Local time %u/%u/%u %u:%u:%u", localTime.wYear, localTime.wMonth, localTime.wDay, localTime.wHour, localTime.wMinute, localTime.wSecond);
++
+ 		LogUtil::Info(log,
+-			"SaveCurrentSystemTimeToFile",
++			 
+ 			APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 
+ 		CStringA strUsingFilename = "\\My Flash Disk\\time.log";
+@@ -718,15 +742,15 @@
+ 		}
+ 		else
+ 		{
+-			LogUtil::Info("Open file fail",
+-				"Save SystemTime",
++			LogUtil::Info(L"Open file fail",
++				 
+ 				APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 		}
+ 	}
+ 	else
+ 	{
+-		LogUtil::Info("not set system time yet so not save time to file",
+-			"SaveCurrentSystemTimeToFile",
++		LogUtil::Info(L"not set system time yet so not save time to file",
++			 
+ 			APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 	}
+ }
+@@ -750,17 +774,20 @@
+ 		SYSTEMTIME currntTime;
+ 		GetLocalTime(&currntTime);
+ 		SystemTimeToFileTime(&currntTime, &fileTime);
+-		CStringA log;
+-		log.Format("Get current time %u/%u/%u %u:%u:%u", currntTime.wYear, currntTime.wMonth, currntTime.wDay, currntTime.wHour, currntTime.wMinute, currntTime.wSecond);
++		//CStringA log;
++		//log.Format("Get current time %u/%u/%u %u:%u:%u", currntTime.wYear, currntTime.wMonth, currntTime.wDay, currntTime.wHour, currntTime.wMinute, currntTime.wSecond);
++		TCHAR  log[255];
++		wsprintf(log, L"Get current time %u/%u/%u %u:%u:%u", currntTime.wYear, currntTime.wMonth, currntTime.wDay, currntTime.wHour, currntTime.wMinute, currntTime.wSecond);
++
+ 		LogUtil::Info(log,
+-			"RestoreFileToSystemTime",
++			 
+ 			APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 
+ 		int nTokenPos = 0;
+ 		CStringA strHighDateTime = strRestore.Tokenize("//", nTokenPos);
+ 		if(nTokenPos == -1) {
+-			LogUtil::Info("Time log is incorrect!! Delete time log file",
+-				"Restore SystemTime",
++			LogUtil::Info(L"Time log is incorrect!! Delete time log file",
++				 
+ 				APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 			BSTR br = strUsingFilename.AllocSysString();
+ 			DeleteFile(br);
+@@ -769,8 +796,8 @@
+ 		}
+ 		CStringA strLowDateTime = strRestore.Tokenize("//", nTokenPos);
+ 		if(nTokenPos == -1) {
+-			LogUtil::Info("Time log is incorrect!! Delete time log file",
+-				"Restore SystemTime",
++			LogUtil::Info(L"Time log is incorrect!! Delete time log file",
++				 
+ 				APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 			BSTR br = strUsingFilename.AllocSysString();
+ 			DeleteFile(br);
+@@ -789,12 +816,15 @@
+ 			{
+ 				if(FileTimeToSystemTime(&fileTimeRestore, &systemTime))
+ 				{
+-					CStringA strSystemTime;
++					//CStringA strSystemTime;
+ 
+-					strSystemTime.Format("%04d/%02d/%02d %02d:%02d:%02d%\r\n", systemTime.wYear, systemTime.wMonth, systemTime.wDay, systemTime.wHour, systemTime.wMinute, systemTime.wSecond);
++					//strSystemTime.Format("%04d/%02d/%02d %02d:%02d:%02d%\r\n", systemTime.wYear, systemTime.wMonth, systemTime.wDay, systemTime.wHour, systemTime.wMinute, systemTime.wSecond);
+ 
++					TCHAR  strSystemTime[255];
++					wsprintf(strSystemTime, L"%04d/%02d/%02d %02d:%02d:%02d%\r\n", systemTime.wYear, systemTime.wMonth, systemTime.wDay, systemTime.wHour, systemTime.wMinute, systemTime.wSecond);
++
+ 					LogUtil::Info(strSystemTime,
+-						"Restore SystemTime",
++						 
+ 						APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 
+ 					SetLocalTime(&systemTime);
+@@ -801,8 +831,8 @@
+ 				}
+ 			}
+ 			else {
+-				LogUtil::Info("Not restore",
+-					"Restore SystemTime",
++				LogUtil::Info(L"Not restore",
++					 
+ 					APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 			}
+ 		}
+@@ -814,8 +844,8 @@
+ 	}
+ 	else
+ 	{
+-		LogUtil::Info("Open file fail",
+-			"Restore SystemTime",
++		LogUtil::Info(L"Open file fail",
++			 
+ 			APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 	}
+ }
+@@ -1098,7 +1128,7 @@
+ 
+ BOOL Set_LED_State(LED_STATE state)
+ {
+-	CStringA strLog;
++	//CStringA strLog;
+ 	BOOL bRet = TRUE;
+ 	HANDLE hFile = NULL;
+ 	DWORD dwIoControlCode = 0;
+@@ -1174,10 +1204,15 @@
+ 				NULL);
+ 			if (TRUE == bRet)
+ 			{
+-				strLog.Format("Control %s LED to OFF(0x%02X)",
+-					dwIoControlCode == IOCTL_ODM_POWER_LED ? "POWER" : "NDR-Link",
+-					offLed);
+-				LogUtil::Info(strLog, FnName, APP_CFG_DEFAULT_LOG_FILE_PATH);
++				//strLog.Format("Control %s LED to OFF(0x%02X)",
++				//	dwIoControlCode == IOCTL_ODM_POWER_LED ? "POWER" : "NDR-Link",
++				//	offLed);
++				TCHAR  strLog[255];
++				wsprintf(strLog, L"Control %s LED to OFF(0x%02X)",
++						dwIoControlCode == IOCTL_ODM_POWER_LED ? L"POWER" : L"NDR-Link",
++						offLed);
++
++				LogUtil::Info(strLog, APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 			}
+ 		}
+ 	}
+@@ -1194,11 +1229,16 @@
+ 
+ 	if (TRUE == bRet)
+ 	{
+-		CStringA strLog;
+-		strLog.Format("Control %s LED: [0x%04X]", 
+-			dwIoControlCode == IOCTL_ODM_POWER_LED ? "POWER" : "NDR-Link",
+-			state);
+-		LogUtil::Info(strLog, FnName, APP_CFG_DEFAULT_LOG_FILE_PATH);
++		//CStringA strLog;
++		//strLog.Format("Control %s LED: [0x%04X]", 
++		//	dwIoControlCode == IOCTL_ODM_POWER_LED ? "POWER" : "NDR-Link",
++		//	state);
++		TCHAR  strLog[255];
++		wsprintf(strLog, L"Control %s LED: [0x%04X]", 
++				dwIoControlCode == IOCTL_ODM_POWER_LED ? L"POWER" : L"NDR-Link",
++				state);
++
++		LogUtil::Info(strLog, APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 	}
+ 
+ 	return bRet;
+@@ -1547,13 +1587,13 @@
+ 	{
+ 		global_pmu_user = User_Batte_B;
+ 		//printf("CheckPowerUser_A_B is User_Batte_B\r\n");
+-		LogUtil::Info("User_Batte_B", "CheckPowerUser_A_B_global", APP_CFG_DEFAULT_LOG_FILE_PATH);
++		LogUtil::Info(L"User_Batte_B",   APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 	}
+ 	else
+ 	{
+ 		global_pmu_user = User_Cigar_A;
+ 		//printf("CheckPowerUser_A_B is User_Cigar_A\r\n");
+-		LogUtil::Info("User_Cigar_A", "CheckPowerUser_A_B_global", APP_CFG_DEFAULT_LOG_FILE_PATH);
++		LogUtil::Info(L"User_Cigar_A",   APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 	}
+ 
+ 	//GetVal [1]:CAR_BREAK_CPU pin status
+@@ -2175,8 +2215,8 @@
+ std::map<std::string, std::string> * GetMappingFromReg(HKEY hKey, int iMaxItems)
+ {
+ 	std::map<std::string, std::string> *map = NULL;
+-	TCHAR    achKey[MAX_KEY_LENGTH];   // buffer for subkey name
+-	DWORD    cbName;                   // size of name string 
++//	TCHAR    achKey[MAX_KEY_LENGTH];   // buffer for subkey name
++//	DWORD    cbName;                   // size of name string 
+ 	TCHAR    achClass[MAX_PATH] = TEXT("");  // buffer for class name 
+ 	DWORD    cchClassName = MAX_PATH;  // size of class string 
+ 	DWORD    cSubKeys=0;               // number of subkeys 
+@@ -2270,8 +2310,8 @@
+ 
+ BOOL SearchEventPathFromReg(HKEY hKey, CString videoFilePath, std::string *strPath)
+ {
+-	TCHAR    achKey[MAX_KEY_LENGTH];   // buffer for subkey name
+-	DWORD    cbName;                   // size of name string 
++//	TCHAR    achKey[MAX_KEY_LENGTH];   // buffer for subkey name
++//	DWORD    cbName;                   // size of name string 
+ 	TCHAR    achClass[MAX_PATH] = TEXT("");  // buffer for class name 
+ 	DWORD    cchClassName = MAX_PATH;  // size of class string 
+ 	DWORD    cSubKeys=0;               // number of subkeys 
+@@ -2499,8 +2539,11 @@
+ 						(LPBYTE) videoFilePath.GetBuffer(videoFilePath.GetLength()), 
+ 						videoFilePath.GetLength()*sizeof(TCHAR)))
+ 					{
+-						strLog.Format(L"Write mapping success: %s -> %s", strDataFilePath, videoFilePath);
++						//strLog.Format(L"Write mapping success: %s -> %s", strDataFilePath, videoFilePath);
+ 						//LogUtil2::Info(strLog, FnNameW, APP_CFG_DEFAULT_LOG_FILE_PATH_W);
++						TCHAR  strLog[255];
++						wsprintf(strLog, L"Write mapping success: %s -> %s", strDataFilePath, videoFilePath);
++
+ 						LogUtil::Info(strLog, FnNameW, APP_CFG_DEFAULT_LOG_FILE_PATH_W);
+ 						result = TRUE;
+ 						RegFlushKey(hEventKey);
+@@ -2589,7 +2632,10 @@
+ 						(LPBYTE) strDataFilePath.GetBuffer(strDataFilePath.GetLength()), 
+ 						strDataFilePath.GetLength()*sizeof(TCHAR)))
+ 					{
+-						strLog.Format(L"Write temp mapping success: %s -> %s", videoFilePath, strDataFilePath);
++						//strLog.Format(L"Write temp mapping success: %s -> %s", videoFilePath, strDataFilePath);
++						TCHAR  strLog[255];
++						wsprintf(strLog, L"Write temp mapping success: %s -> %s", videoFilePath, strDataFilePath);
++
+ 						LogUtil::Info(strLog, FnNameW, APP_CFG_DEFAULT_LOG_FILE_PATH_W);
+ 						result = TRUE;
+ 						RegFlushKey(hEventTmpKey);
+@@ -2971,10 +3017,13 @@
+ 
+     if(bRet)
+     {
+- CStringA log;
++ 
++		//CStringA log;
++        //log.Format("GetVal = 0x%x", GetVal);
++		TCHAR  log[255];
++		wsprintf(log, L"GetVal = 0x%x", GetVal);
+ 
+-        log.Format("GetVal = 0x%x", GetVal);
+-        LogUtil::Info(log, "Check_LTE_Init_Ready", APP_CFG_DEFAULT_LOG_FILE_PATH);
++        LogUtil::Info(log, APP_CFG_DEFAULT_LOG_FILE_PATH);
+         if(GetVal == 0xee)
+         {
+             return TRUE;
+Index: Global/Global.h
+===================================================================
+--- Global/Global.h	(revision 2471)
++++ Global/Global.h	(working copy)
+@@ -7,6 +7,11 @@
+ #include <vector>
+ #include <map>
+ 
++#define _L(x) __L(x)
++#define __L(x) L##x
++#define FnName "> > > " __FUNCTION__ " < < <"
++#define FnNameW L"> > > " _L(__FUNCTION__) L" < < <"
++
+ typedef BYTE ProtocolRawData;
+ 
+ /**
+@@ -400,6 +405,8 @@
+ BOOL PrintToFile_INS(TCHAR * fmt, ...);
+ //BOOL PrintToFile_NEMA_EVENT(CHAR * fmt, ...);
+ BOOL PrintToFile_INSEx(CString strINS);
++BOOL PrintToFile_INSEx2(TCHAR * strINS);
++
+ BOOL PrintToFile_SensorsEx(CString strSensors);
+ BOOL PrintToFile_GPSEx(CString strGPS);
+ BYTE Check_ACC_STATUS_global();
+Index: GPS/GPS.cpp
+===================================================================
+--- GPS/GPS.cpp	(revision 2471)
++++ GPS/GPS.cpp	(working copy)
+@@ -26,6 +26,8 @@
+ 
+ #include "NDRManager.h"
+ #include "MainFrm.h"
++#include "nclog.h"
++
+ #define FORMATTED_LONG_SIZE 10
+ #define FORMATTED_LAT_SIZE 9
+ #define RADIAN_TO_DEGREE(x) x*57.2957795f // radian to degree
+@@ -1167,10 +1169,18 @@
+ 			if ((abs(valueX) > Danger_STRAIGHT.Level5 ) || (abs(valueY) > Danger_STRAIGHT.Level5 ) || (abs(value_XY) > Danger_STRAIGHT.Level5))
+ 			{
+ #if INS__WRITE
++#if 0
+ 				CString INSs2;
+ 				INSs2.Format(L"Collision_raw L5 or L6 Happened. X base = %f , Y base = %f , XY Combine= %f. ",float(valueX/1000), float(valueY/1000), float(fvalue_XY));
+ 				PrintToFile_INSEx(INSs2);
++#else
++				TCHAR  INSs2[255];
++				wsprintf(INSs2, L"Collision_raw L5 or L6 Happened. X base = %f , Y base = %f , XY Combine= %f. ",float(valueX/1000), float(valueY/1000), float(fvalue_XY));
++
++				PrintToFile_INSEx2(INSs2);
+ #endif
++				
++#endif
+ 				//LogUtil::Debug(strLogs, strClass);
+ 				//FirmwareUtil::PlayVoice(IMPACT); 
+ 				return true;
+@@ -10436,6 +10446,11 @@
+ 
+ DWORD WINAPI GPS::Parser(LPVOID lpData)
+ {
++	// delibreately call few logging functions without 
++	// initializing the logger - in this case logs will appear on
++	// console, until InitLogger is done.
++	LogDebug(" THIS LOG WILL APPEAR IN CONSOLE, SINCE InitLogger() was not called");
++
+ 	char DataMsg[DATA_SIZE] = {0};
+ 	//BYTE DataMeas[DATA_SIZE];
+ 	DWORD index=0;
+Index: MainFrm.cpp
+===================================================================
+--- MainFrm.cpp	(revision 2471)
++++ MainFrm.cpp	(working copy)
+@@ -283,10 +283,16 @@
+ 	int versionInt = GetFileVersion(versionStr);
+ 	LogUtil::Instance()->Init();
+ 	//LogUtil2::Instance()->Init();
+-	CStringA log;
+-	log.Format("\n\n\nAPP started version : %s", versionStr);
+-	LogUtil::Info(log, "", APP_CFG_DEFAULT_LOG_FILE_PATH);
++	//CStringA log;
++	//log.Format("\n\n\nAPP started version : %s", versionStr);
+ 
++	//TCHAR  log[255];
++	//wsprintf(log, L"\n\n\nAPP started version : %s", (LPCTSTR)versionStr);
++
++	char log[100] = {0};
++	sprintf(log,"%s", versionStr.GetString()); 
++	LogUtil::Info(log, FnName, APP_CFG_DEFAULT_LOG_FILE_PATH);
++
+ #ifdef UNDER_CE
+ 	HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)PowerStateThreadProc, 0, 0, NULL);
+ 	::SetThreadPriority(hThread, THREAD_PRIORITY_ABOVE_NORMAL);
+@@ -2481,7 +2487,7 @@
+ 	//NKDbgPrintfW(L"PowerCheck_PerSec_ThreadProc id = 0x%x: \r\n",dwThreadId);
+ 	CStringA strLog;
+ 	strLog.Format("PowerCheck_PerSec_ThreadProc id = 0x%x: ",dwThreadId);
+-	LogUtil::Debug(strLog,"PowerCheck_PerSec_ThreadProc",APP_CFG_DEFAULT_LOG_FILE_PATH);
++	LogUtil::Debug(strLog, APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 	while (true)
+ 	{
+ 		nGoCode = WaitForSingleObject (m_hEvt_PWR_Chk, dwMinSec);
+@@ -2506,21 +2512,21 @@
+ 		if ((pmu_state!= Process_Unknown) || (bAfterNormal_Power_Check==TRUE) || (global_pmu_user ==User_Cigar_A) || (wake_90_cnt!=0) || (bNeed_PowerCheck == FALSE))
+ 		{
+ 			if (pmu_state!= Process_Unknown) {
+-				LogUtil::Info("pmu_state!= Process_Unknown", "PowerCheck_PerSec_ThreadProc", APP_CFG_DEFAULT_LOG_FILE_PATH);
++				LogUtil::Info(L"pmu_state!= Process_Unknown", FnNameW,  APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 			}
+ 			if (bAfterNormal_Power_Check==TRUE) {
+-				LogUtil::Info("bAfterNormal_Power_Check==TRUE", "PowerCheck_PerSec_ThreadProc", APP_CFG_DEFAULT_LOG_FILE_PATH);
++				LogUtil::Info(L"bAfterNormal_Power_Check==TRUE", FnNameW,  APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 			}
+ 			if (global_pmu_user ==User_Cigar_A) {
+-				LogUtil::Info("global_pmu_user ==User_Cigar_A", "PowerCheck_PerSec_ThreadProc", APP_CFG_DEFAULT_LOG_FILE_PATH);
++				LogUtil::Info(L"global_pmu_user ==User_Cigar_A", FnNameW,  APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 			}
+ 			if (wake_90_cnt!=0) {
+-				LogUtil::Info("wake_90_cnt!=0", "PowerCheck_PerSec_ThreadProc", APP_CFG_DEFAULT_LOG_FILE_PATH);
++				LogUtil::Info(L"wake_90_cnt!=0", FnNameW,  APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 			}
+ 			if (bNeed_PowerCheck == FALSE) {
+-				LogUtil::Info("bNeed_PowerCheck == FALSE", "PowerCheck_PerSec_ThreadProc", APP_CFG_DEFAULT_LOG_FILE_PATH);
++				LogUtil::Info(L"bNeed_PowerCheck == FALSE", FnNameW,  APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 			}
+-			LogUtil::Info("No judge continue.", "PowerCheck_PerSec_ThreadProc", APP_CFG_DEFAULT_LOG_FILE_PATH);
++			LogUtil::Info(L"No judge continue.", FnNameW,APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 			continue;
+ 		}
+ 
+@@ -2527,7 +2533,7 @@
+ 
+ 		if (Check_B_CUT_global()==0)
+ 		{
+-			LogUtil::Info("60sec Check_B_CUT_global == 0 Will Power Off.","PowerCheck_PerSec_ThreadProc",APP_CFG_DEFAULT_LOG_FILE_PATH);
++			LogUtil::Info(L"60sec Check_B_CUT_global == 0 Will Power Off.",FnNameW, APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 			b_Need_SendOperationEnd = TRUE;
+ 			Device_Off_CreatThread();
+ 		}
+@@ -2535,7 +2541,7 @@
+ 		{
+ 			if ((Check_B_STATUS_global() == 0) && (b_Into_System_Suspend==FALSE))
+ 			{
+-				LogUtil::Info("Is Lower 10.5 V","PowerCheck_PerSec_ThreadProc",APP_CFG_DEFAULT_LOG_FILE_PATH);
++				LogUtil::Info(L"Is Lower 10.5 V", FnNameW,APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 				dwMinSec = 2000;
+ 				if (Check_ACC_STATUS_global() == 0) 
+ 				{
+@@ -2548,7 +2554,7 @@
+ 			{
+ 				if (Check_ACC_STATUS_global() == 0) 
+ 				{
+-					LogUtil::Info("Will Call Sleep99","PowerCheck_PerSec_ThreadProc",APP_CFG_DEFAULT_LOG_FILE_PATH);
++					LogUtil::Info(L"Will Call Sleep99",FnNameW, APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 					b_Need_SendOperationEnd = TRUE;	
+ 					b_Need_PlayEndVoice = TRUE;
+ 					b_Need_DialUp = FALSE;
+@@ -2557,7 +2563,7 @@
+ 				}
+ 				else
+ 				{
+-					LogUtil::Info("Hifger 10.5 V and Acc is On","PowerCheck_PerSec_ThreadProc",APP_CFG_DEFAULT_LOG_FILE_PATH);
++					LogUtil::Info(L"Hifger 10.5 V and Acc is On", FnNameW, APP_CFG_DEFAULT_LOG_FILE_PATH);
+ 					dwMinSec = 60000;
+ 					Send_WDT_Pulse();
+ #if 0
+Index: NDR_Link/SerialPortHelper.h
+===================================================================
+--- NDR_Link/SerialPortHelper.h	(revision 2471)
++++ NDR_Link/SerialPortHelper.h	(working copy)
+@@ -12,10 +12,10 @@
+ #include "EventQueue.h"
+ #include "StackArray.h"
+ 
+-#define _L(x) __L(x)
+-#define __L(x) L##x
+-#define FnName "> > > " __FUNCTION__ " < < <"
+-#define FnNameW L"> > > " _L(__FUNCTION__) L" < < <"
++// #define _L(x) __L(x)
++// #define __L(x) L##x
++// #define FnName "> > > " __FUNCTION__ " < < <"
++// #define FnNameW L"> > > " _L(__FUNCTION__) L" < < <"
+ 
+ #define MAX_OPEN_PORT_TIMES       10
+ #define MAX_RX_BUFFER_LENGTH   4096
+Index: NDR_Link/VideoSearchHelper.cpp
+===================================================================
+--- NDR_Link/VideoSearchHelper.cpp	(revision 2471)
++++ NDR_Link/VideoSearchHelper.cpp	(working copy)
+@@ -202,7 +202,7 @@
+   {
+     HKEY hCloudKey = NULL;
+     HKEY hMsgKey = NULL;
+-    DWORD dw;
++    //DWORD dw;
+     BYTE * msgData = NULL;
+     BYTE * keyData = NULL;
+ 
+@@ -299,7 +299,7 @@
+   if (false == pBuf->csFileName.IsEmpty())
+   {
+     HKEY hCloudKey = NULL;
+-    DWORD dw;
++    //DWORD dw;
+ 
+     if (ERROR_SUCCESS != RegOpenKeyEx(HKEY_CURRENT_USER,  L"Software\\NDR\\Cloud", 0, KEY_WRITE|KEY_READ, &hCloudKey))
+     {
+Index: Settings_Manager/Setting_Manager.cpp
+===================================================================
+--- Settings_Manager/Setting_Manager.cpp	(revision 2471)
++++ Settings_Manager/Setting_Manager.cpp	(working copy)
+@@ -340,7 +340,7 @@
+ 
+         strExePath = strPath.Left(nPos+1);
+ 
+-        strSettingXML.Format(L"%s\Setting.xml", strExePath);
++        strSettingXML.Format(L"%s\\Setting.xml", strExePath);
+ 
+         CT2CA settingFile(strSettingXML);
+         m_settingFilePath = settingFile;
+Index: TBoxWinCE.vcproj
+===================================================================
+--- TBoxWinCE.vcproj	(revision 2471)
++++ TBoxWinCE.vcproj	(working copy)
+@@ -44,12 +44,12 @@
+ 				Name="VCCLCompilerTool"
+ 				ExecutionBucket="7"
+ 				Optimization="0"
+-				AdditionalIncludeDirectories=".\;.\Global;.\Settings_Manager;.\GPS;.\Speed_Pulse;.\Communication;.\Communication\data;.\Communication\messages;.\Communication\marker;.\Utility;.\ThirdParty;.\ThirdParty\Include;.\ThirdParty\Include\zlib;.\ThirdParty\Src;.\ThirdParty\Src\CESocket;.\ThirdParty\Src\TinyXML;.\ThirdParty\Src\boost_1_66_0;.\NDR_Link\FileRecord;.\NDR_Link;.\NDR_Link\Enum;.\NDR_Link\Struct;.\NDR_Link\Lock"
++				AdditionalIncludeDirectories=".\;.\Global;.\Settings_Manager;.\GPS;.\Speed_Pulse;.\Communication;.\Communication\data;.\Communication\messages;.\Communication\marker;.\Utility;.\ThirdParty;.\ThirdParty\Include;.\ThirdParty\Include\zlib;.\ThirdParty\Src;.\ThirdParty\Src\CESocket;.\ThirdParty\Src\TinyXML;.\ThirdParty\Src\boost_1_66_0;.\NDR_Link\FileRecord;.\NDR_Link;.\NDR_Link\Enum;.\NDR_Link\Struct;.\NDR_Link\Lock;.\liblogger\inc;.\liblogger\src\platform_layer\win32;.\liblogger\src\platform_layer\inc;.\liblogger\src"
+ 				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;WINCE;DEBUG;$(ARCHFAM);$(_ARCHFAM_);STANDARDSHELL_UI_MODEL;ZLIB_WINAPI"
+ 				MinimalRebuild="true"
+ 				RuntimeLibrary="1"
+ 				RuntimeTypeInfo="true"
+-				UsePrecompiledHeader="2"
++				UsePrecompiledHeader="0"
+ 				AssemblerOutput="2"
+ 				WarningLevel="3"
+ 				DebugInformationFormat="3"
+@@ -71,7 +71,7 @@
+ 				AdditionalOptions=" /subsystem:windowsce,6.00"
+ 				AdditionalDependencies="Iphlpapi.lib Coredll.lib zlib.lib WinInet.lib"
+ 				LinkIncremental="2"
+-				AdditionalLibraryDirectories=".\ThirdParty\Lib\zlib\WinCE\Debug;.\ThirdParty\Lib\RIL"
++				AdditionalLibraryDirectories=".\ThirdParty\Lib\zlib\WinCE\Debug;.\ThirdParty\Lib\RIL;.\liblogger\lib"
+ 				GenerateDebugInformation="true"
+ 				GenerateMapFile="true"
+ 				StackReserveSize="131072"
+@@ -224,12 +224,12 @@
+ 				Name="VCCLCompilerTool"
+ 				ExecutionBucket="7"
+ 				Optimization="0"
+-				AdditionalIncludeDirectories=".\;.\Global;.\Settings_Manager;.\GPS;.\Speed_Pulse;.\Communication;.\Communication\data;.\Communication\messages;.\Communication\marker;.\Utility;.\ThirdParty;.\ThirdParty\Include;.\ThirdParty\Include\zlib;.\ThirdParty\Src;.\ThirdParty\Src\CESocket;.\ThirdParty\Src\TinyXML;.\ThirdParty\Src\boost_1_66_0;.\NDR_Link\FileRecord;.\NDR_Link;.\NDR_Link\Enum;.\NDR_Link\Struct;.\NDR_Link\Lock"
++				AdditionalIncludeDirectories=".\;.\Global;.\Settings_Manager;.\GPS;.\Speed_Pulse;.\Communication;.\Communication\data;.\Communication\messages;.\Communication\marker;.\Utility;.\ThirdParty;.\ThirdParty\Include;.\ThirdParty\Include\zlib;.\ThirdParty\Src;.\ThirdParty\Src\CESocket;.\ThirdParty\Src\TinyXML;.\ThirdParty\Src\boost_1_66_0;.\NDR_Link\FileRecord;.\NDR_Link;.\NDR_Link\Enum;.\NDR_Link\Struct;.\NDR_Link\Lock;.\wcelibcex"
+ 				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;WINCE;DEBUG;ENABLE_PRESSURE_TEST;$(ARCHFAM);$(_ARCHFAM_);STANDARDSHELL_UI_MODEL;ZLIB_WINAPI"
+ 				MinimalRebuild="true"
+ 				RuntimeLibrary="1"
+ 				RuntimeTypeInfo="true"
+-				UsePrecompiledHeader="2"
++				UsePrecompiledHeader="0"
+ 				WarningLevel="3"
+ 				DebugInformationFormat="3"
+ 			/>
+@@ -709,6 +709,14 @@
+ 					>
+ 				</File>
+ 				<File
++					RelativePath=".\Utility\nclog.cpp"
++					>
++				</File>
++				<File
++					RelativePath=".\Utility\nclog.h"
++					>
++				</File>
++				<File
+ 					RelativePath=".\Utility\NetworkUtil.cpp"
+ 					>
+ 				</File>
+@@ -913,6 +921,50 @@
+ 				Name="Voice"
+ 				>
+ 			</Filter>
++			<Filter
++				Name="liblogger"
++				>
++				<File
++					RelativePath=".\liblogger\src\file_logger.c"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\src\file_logger_impl.h"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\src\liblogger.c"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\src\LLTimeUtil.c"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\src\LLTimeUtil.h"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\src\socket_logger.c"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\src\socket_logger_impl.h"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\src\platform_layer\win32\tPLMutex.c"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\src\platform_layer\win32\tPLSocket.c"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\src\win32_support.h"
++					>
++				</File>
++			</Filter>
+ 		</Filter>
+ 		<Filter
+ 			Name="Header Files"
+@@ -1435,6 +1487,34 @@
+ 					</File>
+ 				</Filter>
+ 			</Filter>
++			<Filter
++				Name="liblogger"
++				>
++				<File
++					RelativePath=".\liblogger\inc\liblogger\file_logger.h"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\inc\liblogger\liblogger.h"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\inc\liblogger\liblogger_config.h"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\inc\liblogger\liblogger_levels.h"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\inc\liblogger\logger_object.h"
++					>
++				</File>
++				<File
++					RelativePath=".\liblogger\inc\liblogger\socket_logger.h"
++					>
++				</File>
++			</Filter>
+ 		</Filter>
+ 		<Filter
+ 			Name="Resource Files"
+Index: Utility/FirmwareUtil.cpp
+===================================================================
+--- Utility/FirmwareUtil.cpp	(revision 2471)
++++ Utility/FirmwareUtil.cpp	(working copy)
+@@ -838,17 +838,23 @@
+       //char *pPath = new char [dwNum];
+       //memset(pPath, 0, dwNum);
+       //WideCharToMultiByte (CP_OEMCP, NULL, voiceFolder, -1, pPath, dwNum, NULL, FALSE);
+-      CString log;
+-      log.Format(L"voice file5 : %s", path);
+-      LogUtil::Info(log, L"FirmwareUtil::PlayVoiceImp", APP_CFG_DEFAULT_LOG_FILE_PATH_W);
++      //CString log;
++      //log.Format(L"voice file5 : %s", path);
++	  TCHAR  log[255];
++	  wsprintf(log, L"voice file5 : %s", path);
++
++      LogUtil::Info(log,FnNameW, APP_CFG_DEFAULT_LOG_FILE_PATH);
+       //delete[] pPath;
+   }
+   else
+   {
+-      CStringA log;
+-      path.Format(L"%s%03d.wav", APP_CFG_DEFAULT_VOICE_PATH_W, type);
+-      log.Format("voice file : %s%03d.wav", APP_CFG_DEFAULT_VOICE_PATH, type);
+-      LogUtil::Info(log, TAG , APP_CFG_DEFAULT_LOG_FILE_PATH);
++      //CStringA log;
++      //path.Format(L"%s%03d.wav", APP_CFG_DEFAULT_VOICE_PATH_W, type);
++      //log.Format("voice file : %s%03d.wav", APP_CFG_DEFAULT_VOICE_PATH, type);
++	  TCHAR  log[255];
++	  wsprintf(log, L"voice file : %s%03d.wav", APP_CFG_DEFAULT_VOICE_PATH, type);
++
++      LogUtil::Info(log, FnNameW , APP_CFG_DEFAULT_LOG_FILE_PATH);
+   }
+ #else
+   char path[256];
+Index: Utility/LogUtil.cpp
+===================================================================
+--- Utility/LogUtil.cpp	(revision 2471)
++++ Utility/LogUtil.cpp	(working copy)
+@@ -4,6 +4,7 @@
+ #include "StringUtil.h"
+ #include "FileUtil.h"
+ #include "NDRConfig.h"
++#include "nclog.h"
+ 
+ #define SHOW_CONSLOE 0
+ #ifdef UNDER_CE
+@@ -90,6 +91,18 @@
+ 		Info(CStringW(strLog), CStringW(strTag), CStringW(strFilename));
+ }
+ 
++void LogUtil::Info( const wchar_t *fmt, const char	*logFileName)
++{
++	if (m_Level >= LOG_LVL_INFO)
++		nclog( logFileName, fmt);
++}
++
++void LogUtil::Info( const wchar_t *fmt, const wchar_t	*tag , const char	*logFileName)
++{
++	if (m_Level >= LOG_LVL_INFO)
++		nclog( logFileName,tag, fmt);
++}
++
+ void LogUtil::Info(const CStringW& strLog, const CStringW& strTag, const CStringW& strFilename)
+ {
+     try
+@@ -359,6 +372,7 @@
+ 
+ void LogUtil::ToConsole(const CStringW& strFormat)
+ {
++#if 0
+   BSTR br = strFormat.AllocSysString();
+   OutputDebugString(br);
+ #if SHOW_CONSLOE
+@@ -365,6 +379,13 @@
+   wprintf(br);
+ #endif
+   ::SysFreeString(br);
++#else
++#ifdef DEBUG
++	DEBUGMSG(1, (strFormat));
++#else
++	RETAILMSG(1, (strFormat));
++#endif
++#endif
+ }
+ 
+ void LogUtil::ToFileForGPS(const CStringW& strFormat, const CStringW& strFilename)
+Index: Utility/LogUtil.h
+===================================================================
+--- Utility/LogUtil.h	(revision 2471)
++++ Utility/LogUtil.h	(working copy)
+@@ -3,6 +3,10 @@
+ #include "AppConfig.h"
+ #include <string>
+ 
++#include <liblogger/liblogger.h>
++#include <liblogger/file_logger.h>
++#include <liblogger/socket_logger.h>
++
+ class LogUtil
+ {
+ public:
+@@ -26,6 +30,8 @@
+   static void DebugTryCatch(const CStringW& strLog, const CStringW& strTag = L"", const CStringW& strFilename = L"");
+   static void Info(const CStringA& strLog, const CStringA& strTag = "", const CStringA& strFilename = "");
+   static void Info(const CStringW& strLog, const CStringW& strTag = L"", const CStringW& strFilename = L"");
++  static void Info(const wchar_t *fmt, const char	*logFileName);
++  static void Info(const wchar_t *fmt, const wchar_t	*tag, const char	*logFileName);
+   static void InfoTryCatch(const CStringW& strLog, const CStringW& strTag = L"", const CStringW& strFilename = L"");
+   static void Abnormal(const CStringA& strLog, const CStringA& strTag, const CStringA& strFilename = "");
+   static void Abnormal(const CStringW& strLog, const CStringW& strTag = L"", const CStringW& strFilename = L"");
+Index: Utility/warnings.h
+===================================================================
+--- Utility/warnings.h	(nonexistent)
++++ Utility/warnings.h	(working copy)
+@@ -0,0 +1,43 @@
++#pragma once
++/** @file 
++    \brief Adds macros for pragma message and remove warnings
++    
++ *****************************************************************************
++ *  (c) 2005 navman new zealand limited. all rights reserved.
++ *
++ *  module name: Warnings.h
++ *
++ *  Author: Jordan Foo
++ *
++ *****************************************************************************/
++
++ 
++// PRAGMA Message Define extra
++/*  This allows the user to put a pragma message that they can double click
++ *  on to jump directly to the source code line. The usage is as follows:
++ *    #pragma message( __FIXME__ "The message" );
++ *  JORDAN::COMMENTS: AVOID USING THESE MACROS AS THEY ARE DEPRECATED
++ *  They have been put back for backward compatibility
++ */
++#define __STR2__(x) #x
++#define __STR1__(x) __STR2__(x)
++#define __FIXME__ __FILE__ "("__STR1__(__LINE__)") : warning FIXME: "
++#define __TODO__ __FILE__ "("__STR1__(__LINE__)") : warning TODO: "
++
++
++#if defined(WIN32) || defined(_WIN32_WCE)
++/*
++Current:
++ * C4800 - 'type' : forcing value to bool 'true' or 'false' (performance warning)
++ * C4786 - 'identifier' : identifier was truncated to 'number' characters in the debug information. 
++ * C4530 - C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc
++ * C4099 - 'identifier' : type name first seen using 'objecttype1' now seen using 'objecttype2'
++ * C4049 - compiler limit : terminating line number emission
++ * C4005 - 'identifier' : macro redefinition. TOM: Disable for SYS-153
++ * C4355 - 'this' : used in base member initializer list. TOM: Temporarily disable for SST-4255
++
++Old:
++ * C4996 - 'function': was declared deprecated
++*/
++#pragma warning(disable : 4800 4786 4530 4099 4049 4005)
++#endif // WIN32 || _WIN32_WCE

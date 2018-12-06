@@ -121,8 +121,13 @@ static int sSendToSock(LogWriter *_this,const LogLevel logLevel,
 		bytes = snprintf(buf,BUF_MAX-1,"\n%s",sGetLogPrefix(logLevel));
 #endif
 		// to be on safer side, check if required size is available.
-		if(bytes < (BUF_MAX -1) )
+		if(bytes < (BUF_MAX -1) ){
+#if defined(UNDER_CE)
+			bytes += vsprintf(buf+bytes,fmt,ap);
+#else
 			bytes += vsnprintf(buf+bytes,BUF_MAX-1-bytes,fmt,ap);
+#endif
+		}
 		buf[BUF_MAX-1] = 0;
 		if((-1 == bytes ) || (bytes>BUF_MAX-1))
 		{

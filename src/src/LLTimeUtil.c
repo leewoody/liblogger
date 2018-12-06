@@ -21,6 +21,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#if defined(UNDER_CE)
+#include <winbase.h> 
+#endif
 /*
  * Returns the current date time as a string.
  * \param [out] str String where the date time is returned.
@@ -29,6 +32,13 @@
  * */
 int LLGetCurDateTime(char* str, int strLen)
 {
+#if defined(UNDER_CE)
+
+	SYSTEMTIME sysTime; 
+	GetLocalTime( &sysTime );
+	sprintf(str,"%d-%d-%d",sysTime.wYear,sysTime.wMonth,sysTime.wDay);//"2010-09-21"
+
+#else
 	time_t t;
 	struct tm *tmp;
 
@@ -43,6 +53,7 @@ int LLGetCurDateTime(char* str, int strLen)
 		fprintf(stderr, "strftime returned 0");
 		return -1;
 	}
+#endif
 	return 0;
 
 }
